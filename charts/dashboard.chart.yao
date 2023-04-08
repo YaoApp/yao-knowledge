@@ -1,0 +1,324 @@
+{
+  "name": "数据图表",
+  "config": {
+    "full": false
+  },
+  "action": {
+    "before:data": "scripts.stat.BeforeData",
+    "data": {
+      "process": "scripts.stat.Data",
+      "default": ["2022-09-20"]
+    },
+    "after:data": "scripts.stat.AfterData"
+  },
+  "layout": {
+    "operation": {
+      "actions": [
+        {
+          "title": "官网文档",
+          "icon": "icon-book",
+          "action": {
+            "Common.historyPush": { "pathname": "https://yaoapps.com/doc" }
+          }
+        }
+      ]
+    },
+    "filter": {
+      "columns": [{ "name": "时间区间", "width": 6 }]
+    },
+    "chart": {
+      "columns": [
+        { "name": "宠物数量", "width": 6 },
+        { "name": "宠物类型", "width": 6 },
+        { "name": "当月收入", "width": 6 },
+        { "name": "医师数量", "width": 6 },
+        { "name": "宠物数量_上月", "width": 6 },
+        { "name": "宠物类型_上月", "width": 6 },
+        { "name": "当月收入_上月", "width": 6 },
+        { "name": "医师数量_上月", "width": 6 },
+        { "name": "收入", "width": 8 },
+        { "name": "支出", "width": 8 },
+        { "name": "综合评分", "width": 8 },
+        { "name": "收入_折线图", "width": 8 },
+        { "name": "支出_折线图", "width": 8 },
+        { "name": "综合评分_折线图", "width": 8 },
+        { "name": "类型排布", "width": 12 },
+        { "name": "状态分布", "width": 12 },
+        { "name": "综合消费", "width": 24 }
+      ]
+    }
+  },
+  "fields": {
+    "filter": {
+      "时间区间": {
+        "bind": "range",
+        "edit": { "type": "RangePicker", "props": {} }
+      }
+    },
+    "chart": {
+      "收入": {
+        "bind": "income",
+        "link": "/x/Table/pet",
+        "out": "scripts.stat.Income",
+        "view": {
+          "type": "NumberChart",
+          "props": {
+            "chartHeight": 150,
+            "prefix": "¥",
+            "decimals": 2,
+            "nameKey": "date",
+            "valueKey": "value"
+          }
+        }
+      },
+      "支出": {
+        "bind": "cost",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "NumberChart",
+          "props": {
+            "chartHeight": 150,
+            "color": "red",
+            "prefix": "¥",
+            "decimals": 2,
+            "nameKey": "date",
+            "valueKey": "value"
+          }
+        }
+      },
+      "综合评分": {
+        "bind": "rate",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "NumberChart",
+          "props": {
+            "chartHeight": 150,
+            "color": "orange",
+            "unit": "分",
+            "decimals": 1,
+            "nameKey": "date",
+            "valueKey": "value"
+          }
+        }
+      },
+      "收入_折线图": {
+        "bind": "income",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "NumberChart",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "type": "line",
+            "chartHeight": 120,
+            "prefix": "¥",
+            "decimals": 2,
+            "nameKey": "date",
+            "valueKey": "value"
+          }
+        }
+      },
+      "支出_折线图": {
+        "bind": "cost",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "NumberChart",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "type": "line",
+            "chartHeight": 120,
+            "color": "red",
+            "prefix": "¥",
+            "decimals": 2,
+            "nameKey": "date",
+            "valueKey": "value"
+          }
+        }
+      },
+      "综合评分_折线图": {
+        "bind": "rate",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "NumberChart",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "type": "line",
+            "chartHeight": 120,
+            "color": "orange",
+            "unit": "分",
+            "decimals": 1,
+            "nameKey": "date",
+            "valueKey": "value"
+          }
+        }
+      },
+      "宠物数量": {
+        "bind": "pet_count",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "Number",
+          "props": { "unit": "个" }
+        }
+      },
+      "宠物类型": {
+        "bind": "pet_type",
+        "view": {
+          "type": "Number",
+          "props": { "unit": "种" }
+        }
+      },
+      "当月收入": {
+        "bind": "income_monthly",
+        "view": {
+          "type": "Number",
+          "props": { "unit": "元" }
+        }
+      },
+      "医师数量": {
+        "bind": "doctor_count",
+        "view": {
+          "type": "Number",
+          "props": { "unit": "个" }
+        }
+      },
+      "宠物数量_上月": {
+        "bind": "prev_pet_count",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "Number",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "unit": "个",
+            "prev_title": "上月数据"
+          }
+        }
+      },
+      "宠物类型_上月": {
+        "bind": "prev_pet_type",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "Number",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "unit": "种",
+            "prev_title": "上月数据"
+          }
+        }
+      },
+      "当月收入_上月": {
+        "bind": "prev_income_monthly",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "Number",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "unit": "元",
+            "prev_title": "上月数据"
+          }
+        }
+      },
+      "医师数量_上月": {
+        "bind": "prev_doctor_count",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "Number",
+          "props": {
+            "cardStyle": { "padding": 0 },
+            "unit": "个",
+            "prev_title": "上月数据"
+          }
+        }
+      },
+      "类型排布": {
+        "bind": "datasource_type",
+        "link": "/x/Table/pet",
+        "view": {
+          "type": "Pie",
+          "props": {
+            "height": 240,
+            "nameKey": "type",
+            "series": [
+              {
+                "valueKey": "count",
+                "roseType": "area",
+                "radius": [10, 100],
+                "center": ["60%", "50%"],
+                "itemStyle": { "borderRadius": 6 }
+              }
+            ]
+          }
+        },
+        "refer": {
+          "type": "Table",
+          "props": {
+            "columns": [
+              { "title": "类型", "dataIndex": "type" },
+              { "title": "数量", "dataIndex": "count" }
+            ]
+          }
+        }
+      },
+      "状态分布": {
+        "bind": "datasource_status",
+        "view": {
+          "type": "Bar",
+          "props": {
+            "height": 240,
+            "nameKey": "status",
+            "axisLabel": {
+              "interval": 0,
+              "fontSize": 12
+            },
+            "series": [
+              {
+                "valueKey": "count",
+                "type": "bar",
+                "colorBy": "data",
+                "itemStyle": { "borderRadius": 6 },
+                "splitLine": { "show": false },
+                "axisLabel": { "show": false }
+              }
+            ]
+          }
+        },
+        "refer": {
+          "type": "Table",
+          "props": {
+            "columns": [
+              { "title": "状态", "dataIndex": "status" },
+              { "title": "数量", "dataIndex": "count" }
+            ]
+          }
+        }
+      },
+      "综合消费": {
+        "bind": "datasource_cost",
+        "view": {
+          "type": "LineBar",
+          "props": {
+            "height": 240,
+            "nameKey": "name",
+            "axisLabel": { "interval": 0, "fontSize": 12 },
+            "series": [
+              {
+                "valueKey": "stay",
+                "type": "line",
+                "smooth": true,
+                "symbolSize": 8,
+                "itemStyle": { "borderRadius": 6 },
+                "splitLine": { "show": false },
+                "axisLabel": { "show": false }
+              },
+              {
+                "valueKey": "cost",
+                "type": "bar",
+                "itemStyle": { "borderRadius": 6 },
+                "splitLine": { "show": false },
+                "axisLabel": { "show": false }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

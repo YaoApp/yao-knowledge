@@ -1,0 +1,6 @@
+{
+  "name": "宠物",
+  "action": {
+    "bind": { "model": "pet", "option": {} }
+  }
+}

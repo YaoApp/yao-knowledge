@@ -1,0 +1,12 @@
+{
+  "name": "::Admin Login",
+  "action": {
+    "process": "yao.login.Admin",
+    "args": [":payload"]
+  },
+  "layout": {
+    "entry": "/x/Chart/dashboard",
+    "slogan": "::Make Your Dream With Yao App Engine",
+    "site": "https://yaoapps.com?from=instance-admin-login"
+  }
+}

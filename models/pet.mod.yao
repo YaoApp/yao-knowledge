@@ -1,0 +1,66 @@
+{
+  "name": "::Pet",
+  "table": { "name": "yao_demo_pet", "label": "宠物表" },
+  "columns": [
+    { "name": "id", "label": "ID", "type": "ID" },
+    {
+      "name": "name",
+      "label": "昵称",
+      "type": "string",
+      "length": 80,
+      "index": true,
+      "nullable": true
+    },
+    {
+      "name": "type",
+      "label": "类型",
+      "type": "enum",
+      "option": ["cat", "dog", "others"],
+      "index": true
+    },
+    {
+      "name": "status",
+      "label": "入院状态",
+      "type": "enum",
+      "option": ["checked", "curing", "cured"],
+      "index": true
+    },
+    {
+      "name": "mode",
+      "label": "状态",
+      "type": "enum",
+      "option": ["enabled", "disabled"],
+      "index": true
+    },
+    {
+      "name": "online",
+      "label": "是否在线",
+      "type": "boolean",
+      "default": false,
+      "index": true
+    },
+    {
+      "name": "curing_status",
+      "label": "治疗状态",
+      "type": "enum",
+      "default": "0",
+      "option": ["0", "1", "2"],
+      "index": true
+    },
+    { "name": "stay", "label": "入院时间", "type": "integer" },
+    { "name": "cost", "label": "花费", "type": "integer" },
+    {
+      "name": "images",
+      "type": "json",
+      "label": "相关图片",
+      "nullable": true
+    }
+  ],
+  "relations": {},
+  "values": [],
+  "indexes": [],
+  "option": {
+    "timestamps": true,
+    "soft_deletes": true
+  }
+}

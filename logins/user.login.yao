@@ -1,0 +1,12 @@
+{
+  "name": "::User Login",
+  "action": {
+    "process": "scripts.user.Login",
+    "args": [":payload"]
+  },
+  "layout": {
+    "entry": "/x/Table/pet",
+    "slogan": "::Make Your Dream With Yao App Engine",
+    "site": "https://yaoapps.com/?from=instance-user-login"
+  }
+}

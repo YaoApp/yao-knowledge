@@ -1,0 +1,10 @@
+{
+  "name": "::Demo Application",
+  "short": "::Demo",
+  "description": "::Another yao application",
+  "version": "0.10.3",
+  "adminRoot": "admin",
+  "setup": "scripts.demo.Data",
+  "menu": { "process": "flows.app.menu", "args": ["demo"] },
+  "optional": { "hideNotification": true, "hideSetting": false }
+}
