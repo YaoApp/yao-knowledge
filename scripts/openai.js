@@ -1,5 +1,5 @@
 /**
- * ChatGPT API
+ * OPENAI SDK
  * Will be replaced by the new openai process
  */
 
@@ -44,8 +44,6 @@ function post(url, payload, key) {
   let response = http.Post(url, payload, null, null, {
     Authorization: `Bearer ${key}`,
   });
-
-  console.log(response);
 
   if (response.code != 200) {
     throw new Exception(

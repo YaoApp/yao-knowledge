@@ -1,5 +1,5 @@
 /**
- * ChatGPT API
+ * OPENAI SDK
  * Will be replaced by the new openai process
  */
 
