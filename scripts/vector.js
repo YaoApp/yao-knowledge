@@ -73,11 +73,39 @@ const DocumentSchema = {
 function SchemaCreate() {
   let cfg = setting();
   let url = `${cfg.host}/v1/schema`;
-  return post(url, DocumentSchema, cfg.key);
+  post(url, DocumentSchema, cfg.key);
+  return "Document";
+}
+
+/**
+ * Create a schema (run when the application setup)
+ * yao run scripts.vector.SchemaDelete
+ */
+function SchemaDelete() {
+  let cfg = setting();
+  let url = `${cfg.host}/v1/schema/Document`;
+  let response = http.Delete(url);
+  if (response.code != 200) {
+    let errors = response.data.error || response.data;
+    let message = errors.length > 0 ? errors[0].message : "unknown";
+    throw new Exception(message, response.code || 500);
+  }
+
+  return true;
+}
+
+/**
+ * Create a schema (run when the application setup)
+ * yao run scripts.vector.SchemaReset
+ */
+function SchemaReset() {
+  SchemaDelete();
+  return SchemaCreate();
 }
 
 /**
  * SchemaGet
+ * yao run scripts.vector.SchemaGet
  * @returns
  */
 function SchemaGet() {
@@ -96,9 +124,21 @@ function SchemaGet() {
  */
 function Test() {
   console.log("请稍等,这将花费一些时间...");
-  let content = testContent();
-  let id = Insert({ content: content });
-  return id;
+  let text = testContent();
+  let contents = [];
+
+  try {
+    contents = JSON.parse(text);
+  } catch (err) {
+    console.log(err, text);
+  }
+
+  let ids = [];
+  contents.forEach((object) => {
+    let id = Insert(object);
+    ids.push(id);
+  });
+  return ids;
 }
 
 /**
@@ -194,7 +234,6 @@ function testContent() {
   }
 
   let message = choices[0].message || {};
-  log.Info(message.content);
   return message.content;
 }
 
