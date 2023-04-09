@@ -178,7 +178,89 @@ function Objects() {
   return get(url, {}, cfg.key);
 }
 
+/**
+ * Query Data
+ * yao run scripts.vector.Query 帮我写一份心血管健康研究的报告 张三
+ * yao run scripts.vector.Query 帮我写一份心血管健康研究的报告
+ * @param {*} input
+ * @param {*} user
+ */
+function Query(input, user) {
+  let vector = getVector(input);
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+
+  let where = `{ 
+    operator: Or,
+    operands: {
+      path: ["user"],
+      operator: Equal,
+      valueString: "__public"
+    }
+  }`;
+
+  if (user) {
+    where = `{ 
+      operator: Or,
+      operands: [
+        {
+          path: ["user"],
+          operator: Equal,
+          valueString: "${user}"
+        },{
+          path: ["user"],
+          operator: Equal,
+          valueString: "__public"
+        }
+      ]
+    }`;
+  }
+
+  let payload = {
+    query: `{
+      Get {
+        Document(
+          limit: 10
+          nearVector: {
+            vector: ${vector}
+          }
+          where: ${where}
+        ) 
+        {
+          user
+          path
+          type
+          url
+          summary
+          content
+          _additional{
+            id
+            lastUpdateTimeUnix
+          }
+        }
+      }
+    }`,
+  };
+  let response = post(url, payload, cfg.key);
+  let data = response.data || { Get: { Document: [] } };
+  let items = data.Get.Document || [];
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+    item.id = item._additional.id;
+    item.lastUpdateTimeUnix = item._additional.lastUpdateTimeUnix;
+    delete item._additional;
+  }
+  return items;
+}
+
 // === utils =================================
+
+function getVector(input, user) {
+  let response = Process("scripts.openai.Embeddings", input, user);
+  let data = response.data || [];
+  let embedding = data.length > 0 ? data[0].embedding : [];
+  return JSON.stringify(embedding);
+}
 
 function getSummary(content) {
   let response = Process("scripts.openai.chat.Completions", [

@@ -31,6 +31,12 @@ function Embeddings(input, user) {
   return post(url, paylad, cfg.key);
 }
 
+function TokenSize(input) {
+  let cfg = setting();
+  let size = Process("yao.openai.Tiktoken", cfg.model, input);
+  return size;
+}
+
 // === utils =================================
 
 /**
@@ -69,7 +75,7 @@ function setting() {
   );
 
   return {
-    model: vars["OPENAI_MODEL"] || "gpt-3.5-turbo-0301",
+    model: vars["OPENAI_MODEL"] || "gpt-3.5-turbo",
     model_embedding: vars["OPENAI_MODEL_EMBEDDING"] || "text-embedding-ada-002",
     key: vars["OPENAI_KEY"],
     host: vars["OPENAI_PROXY"]
