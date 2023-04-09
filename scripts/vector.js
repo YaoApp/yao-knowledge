@@ -161,16 +161,31 @@ function getSummary(content) {
   return message.content;
 }
 
+/**
+ * Generate test data
+ * yao run scripts.vector.testContent
+ */
 function testContent() {
   let response = Process("scripts.openai.chat.Completions", [
+    { role: "system", content: JSON.stringify(DocumentSchema.properties) },
     {
       role: "system",
       content: `
-      你只能回复200字的内容摘要。
-      不要解释你的答案，也不要使用标点符号。
+      - Generate a set of data according to the data type given to your data structure.
+      - You can only respond with: [{"<properties.name>":"<your generated data>", ...}...]"
+      - The type property is required, and the value can only be: "note", "ppt", "doc", "xls", "pdf", "url"
+      - If the type is url, the url property is required, otherwise, the path property is required.
+      - The property value should be Chinese generated according to the data type.
+      - The content property is required.
+      - The summary property value should be the summary of content property.
+      - all properties are required, but some properties can be empty.
+      - Do not explain your answer, and do not use punctuation.
       `,
     },
-    { role: "user", content: "生成一篇唯美的文章" },
+    {
+      role: "user",
+      content: `Generate 10 items, You must only respond JSON Object.`,
+    },
   ]);
 
   let choices = response.choices || [];
@@ -179,6 +194,7 @@ function testContent() {
   }
 
   let message = choices[0].message || {};
+  log.Info(message.content);
   return message.content;
 }
 

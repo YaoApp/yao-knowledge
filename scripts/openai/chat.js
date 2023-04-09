@@ -56,10 +56,11 @@ function post(url, payload, key) {
   });
 
   if (response.code != 200) {
-    throw new Exception(
-      "OpenAI API error: " + response.body,
-      response.code || 500
-    );
+    let data = response.data || {};
+    let err = data.error || {};
+    let message = err.message || "unknown error";
+    log.Error(`OpenAI API error ${message}`);
+    throw new Exception(`OpenAI API error ${message}`, response.code || 500);
   }
 
   return response.data;
