@@ -2,3 +2,4 @@ db
 data
 logs
 .env
+.DS_Store
