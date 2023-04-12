@@ -61,11 +61,7 @@ function CompletionsStream(messages, user, options) {
     options["user"] = user;
   }
 
-  let paylad = {
-    model: cfg.model,
-    messages: messages,
-    ...options,
-  };
+  let paylad = { model: cfg.model, messages: messages, ...options };
 
   let times = 0;
   return stream(url, paylad, cfg.key, (data) => {
@@ -74,6 +70,24 @@ function CompletionsStream(messages, user, options) {
     if (times > 10) {
       return 0; // break
     }
+    return 1;
+  });
+}
+
+/**
+ * yao run scripts.openai.chat.CompletionsStreamAPI '::[{"role": "user", "content": "帮我写一个关于心血管健康的论文。"}]'
+ *
+ * @param {*} messages
+ * @param {*} ctx
+ * @returns
+ */
+function CompletionsStreamAPI(messages, sid) {
+  let cfg = setting();
+  let url = `${cfg.host}/v1/chat/completions`;
+  messages = messages || [];
+  let paylad = { model: cfg.model, messages: messages, user: "yao" };
+  return stream(url, paylad, cfg.key, (data) => {
+    Process("http.SSEvent", sid, data);
     return 1;
   });
 }
