@@ -6,9 +6,9 @@
   "paths": [
     {
       "path": "/stream",
-      "method": "POST",
+      "method": "GET",
       "process": "scripts.qna.Stream",
-      "in": ["$payload.question", "$payload.user", "$payload.sid"],
+      "in": ["$query.question", "$query.user", "$query.sid"],
       "out": { "status": 200, "type": "application/json", "stream": true }
     }
   ]
