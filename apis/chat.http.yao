@@ -7,7 +7,7 @@
     {
       "path": "/stream",
       "method": "GET",
-      "process": "scripts.qna.Stream",
+      "process": "scripts.qna.AnswerStream",
       "in": ["$query.question", "$query.user", "$query.sid"],
       "out": { "status": 200, "type": "application/json", "stream": true }
     }

@@ -15,6 +15,73 @@ const MaxTokens = 2048;
  * @param {*} user
  */
 function Answer(question, user, sid) {
+  let messages = makeRequest(question, user, sid);
+
+  // send request
+  let response = Process("scripts.openai.chat.Completions", messages, user);
+
+  let choices = response.choices || [];
+  if (choices.length < 1) {
+    throw new Exception("answer error", 400);
+  }
+
+  // save history
+  let message = choices[0].message || {};
+  saveHistory(
+    sid,
+    [
+      { role: "user", content: question },
+      { role: "assistant", content: message.content },
+    ],
+    history
+  );
+
+  return { sid: sid, content: message.content };
+}
+
+function AnswerStream(question, user, sid) {
+  user = "tester";
+  let messages = makeRequest(question, user, sid);
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/chat/completions`;
+  let paylad = { model: cfg.model, messages: messages, user: sid };
+  return stream(url, paylad, cfg.key, (data) => {
+    ssEvent("message", data.slice(5));
+    if (data == "data: [DONE]") {
+      cancel();
+      return 0;
+    }
+    return 1;
+  });
+}
+
+/**
+ * yao run scripts.qna.Stream "帮我写一个关于心血管健康的论文" 张三 371182ee-d76e-4680-a2b7-469cd1020041
+ *
+ * @param {*} messages
+ * @param {*} ctx
+ * @returns
+ */
+function Stream(question, user, sid) {
+  let messages = [{ role: "user", content: question }];
+  let cfg = setting();
+  let url = `${cfg.host}/v1/chat/completions`;
+  messages = messages || [];
+  let paylad = { model: cfg.model, messages: messages, user: sid };
+  return stream(url, paylad, cfg.key, (data) => {
+    ssEvent("message", data.slice(5));
+    if (data == "data: [DONE]") {
+      cancel();
+      return 0;
+    }
+    return 1;
+  });
+}
+
+// === utils =================================
+
+function makeRequest(question, user, sid) {
   sid = sid || Process("utils.str.UUID");
   let history = getHistory(sid); // get the conversation history
   let docs = getDocs(question, history, user); // query the knowledge base
@@ -80,52 +147,8 @@ function Answer(question, user, sid) {
     }
   }
 
-  // send request
-  let response = Process("scripts.openai.chat.Completions", messages, user);
-
-  let choices = response.choices || [];
-  if (choices.length < 1) {
-    throw new Exception("answer error", 400);
-  }
-
-  // save history
-  let message = choices[0].message || {};
-  saveHistory(
-    sid,
-    [
-      { role: "user", content: question },
-      { role: "assistant", content: message.content },
-    ],
-    history
-  );
-
-  return { sid: sid, content: message.content };
+  return messages;
 }
-
-/**
- * yao run scripts.qna.Stream "帮我写一个关于心血管健康的论文" 张三 371182ee-d76e-4680-a2b7-469cd1020041
- *
- * @param {*} messages
- * @param {*} ctx
- * @returns
- */
-function Stream(question, user, sid) {
-  let messages = [{ role: "user", content: question }];
-  let cfg = setting();
-  let url = `${cfg.host}/v1/chat/completions`;
-  messages = messages || [];
-  let paylad = { model: cfg.model, messages: messages, user: sid };
-  return stream(url, paylad, cfg.key, (data) => {
-    ssEvent("message", data.slice(5));
-    if (data == "data: [DONE]") {
-      cancel();
-      return 0;
-    }
-    return 1;
-  });
-}
-
-// === utils =================================
 
 /**
  * Save History by sid
