@@ -5,10 +5,10 @@
   "guard": "-",
   "paths": [
     {
-      "path": "/chat/completions",
+      "path": "/stream",
       "method": "POST",
-      "process": "scripts.openai.chat.CompletionsStreamAPI",
-      "in": [":payload", ":context"],
+      "process": "scripts.qna.Stream",
+      "in": ["$payload.question", "$payload.user", "$payload.sid"],
       "out": { "status": 200, "type": "application/json", "stream": true }
     }
   ]
