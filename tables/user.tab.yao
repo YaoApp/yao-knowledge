@@ -1,0 +1,6 @@
+{
+  "name": "用户管理",
+  "action": {
+    "bind": { "model": "user", "option": { "form": "user" } }
+  }
+}

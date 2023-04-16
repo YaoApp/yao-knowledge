@@ -31,6 +31,15 @@
         "visible_menu": 0
       },
       {
+        "id": 1,
+        "blocks": 0,
+        "icon": "icon-users",
+        "name": "用户",
+        "parent": null,
+        "path": "/x/Table/user",
+        "visible_menu": 0
+      },
+      {
         "id": 2,
         "blocks": 0,
         "icon": "icon-book",

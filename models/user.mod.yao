@@ -1,0 +1,169 @@
+{
+  "name": "用户",
+  "table": { "name": "user", "comment": "用户表" },
+  "columns": [
+    { "label": "ID", "name": "id", "type": "ID" },
+    {
+      "label": "邮箱",
+      "name": "email",
+      "type": "string",
+      "index": true,
+      "validations": [
+        {
+          "method": "typeof",
+          "args": ["string"],
+          "message": "{{input}}类型错误, {{label}}应该为字符串"
+        },
+        {
+          "method": "email",
+          "args": [],
+          "message": "{{input}}不是邮箱地址"
+        }
+      ]
+    },
+    {
+      "label": "密码",
+      "name": "password",
+      "type": "string",
+      "length": 256,
+      "crypt": "PASSWORD"
+    },
+    {
+      "label": "姓名",
+      "name": "name",
+      "type": "string",
+      "length": 80,
+      "comment": "姓名",
+      "index": true,
+      "nullable": true,
+      "validations": [
+        {
+          "method": "typeof",
+          "args": ["string"],
+          "message": "{{input}}类型错误, {{label}}应该为字符串"
+        },
+        {
+          "method": "minLength",
+          "args": [2],
+          "message": "{{label}}至少需要2个字"
+        },
+        {
+          "method": "maxLength",
+          "args": [40],
+          "message": "{{label}}不能超过20个字"
+        }
+      ]
+    },
+    {
+      "label": "职务",
+      "name": "title",
+      "type": "string",
+      "nullable": true,
+      "length": 100
+    },
+    {
+      "label": "状态",
+      "comment": "用户状态 enabled 有效, disabled 无效",
+      "name": "status",
+      "type": "enum",
+      "default": "enabled",
+      "option": ["enabled", "disabled"],
+      "index": true,
+      "validations": [
+        {
+          "method": "typeof",
+          "args": ["string"],
+          "message": "{{input}}类型错误, {{label}}应该为字符串"
+        },
+        {
+          "method": "enum",
+          "args": ["enabled", "disabled"],
+          "message": "{{input}}不在许可范围, {{label}}应该为 enabled/disabled"
+        }
+      ]
+    }
+  ],
+  "values": [
+    {
+      "id": 1,
+      "email": "user1@example.com",
+      "password": "J8p#S$4@",
+      "name": "张鹏飞",
+      "title": "运营总监",
+      "status": "enabled"
+    },
+    {
+      "id": 2,
+      "email": "user2@example.com",
+      "password": "u6&hF#p9",
+      "name": "杨晓燕",
+      "title": "销售经理",
+      "status": "enabled"
+    },
+    {
+      "id": 3,
+      "email": "user3@example.com",
+      "password": "r7@M#k1C",
+      "name": "谢美丽",
+      "title": "人力资源经理",
+      "status": "enabled"
+    },
+    {
+      "id": 4,
+      "email": "user4@example.com",
+      "password": "L2#gP$6k",
+      "name": "林志强",
+      "title": "财务总监",
+      "status": "enabled"
+    },
+    {
+      "id": 5,
+      "email": "user5@example.com",
+      "password": "H1$nC#7r",
+      "name": "赵丽华",
+      "title": "市场总监",
+      "status": "enabled"
+    },
+    {
+      "id": 6,
+      "email": "user6@example.com",
+      "password": "K3!qS#8m",
+      "name": "刘建平",
+      "title": "技术总监",
+      "status": "enabled"
+    },
+    {
+      "id": 7,
+      "email": "user7@example.com",
+      "password": "V4&fG#2u",
+      "name": "陈婷婷",
+      "title": "行政总监",
+      "status": "enabled"
+    },
+    {
+      "id": 8,
+      "email": "user8@example.com",
+      "password": "R5@dW#9t",
+      "name": "黄文明",
+      "title": "客户服务经理",
+      "status": "enabled"
+    },
+    {
+      "id": 9,
+      "email": "user9@example.com",
+      "password": "M7%zD#3q",
+      "name": "王欣悦",
+      "title": "供应链经理",
+      "status": "enabled"
+    },
+    {
+      "id": 10,
+      "email": "user10@example.com",
+      "password": "S6$rA#5f",
+      "name": "朱丽丽",
+      "title": "品牌经理",
+      "status": "enabled"
+    }
+  ],
+  "option": { "timestamps": true, "soft_deletes": true }
+}
