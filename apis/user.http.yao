@@ -1,0 +1,23 @@
+{
+  "name": "用户接口",
+  "version": "1.0.3",
+  "description": "用户接口",
+  "guard": "bearer-jwt",
+  "paths": [
+    {
+      "path": "/login",
+      "guard": "-",
+      "method": "POST",
+      "process": "scripts.user.Login",
+      "in": [":payload"],
+      "out": { "status": 200, "type": "application/json" }
+    },
+    {
+      "path": "/info",
+      "method": "Get",
+      "process": "session.Get",
+      "in": ["user"],
+      "out": { "status": 200, "type": "application/json" }
+    }
+  ]
+}
