@@ -3,6 +3,10 @@
  * Will be replaced by the new vector process
  */
 
+const distance = 0.2;
+const distancePrompts = 0.22;
+const pageSize = 2;
+
 /**
  * the schema of the vector database
  */
@@ -223,6 +227,7 @@ function Query(input, user) {
           limit: 10
           nearVector: {
             vector: ${vector}
+            distance: ${distancePrompts}
           }
           where: ${where}
         ) 
@@ -235,6 +240,7 @@ function Query(input, user) {
           content
           _additional{
             id
+            distance
             lastUpdateTimeUnix
           }
         }
@@ -248,9 +254,138 @@ function Query(input, user) {
     let item = items[i];
     item.id = item._additional.id;
     item.lastUpdateTimeUnix = item._additional.lastUpdateTimeUnix;
+    item.distance = item._additional.distance;
     delete item._additional;
   }
   return items;
+}
+
+/**
+ *
+ * Search Data
+ * yao run scripts.vector.Search 帮我写一份心血管健康研究的报告 1 张三
+ * yao run scripts.vector.Search 帮我写一份心血管健康研究的报告
+ * @param {*} input
+ * @param {*} page
+ * @param {*} user
+ * @returns
+ */
+function Search(input, page, user) {
+  page = page ? parseInt(page) : 1;
+  let offset = page ? (page - 1) * pageSize : 0;
+  let vector = getVector(input);
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+
+  let where = `{ 
+    operator: Or,
+    operands: {
+      path: ["user"],
+      operator: Equal,
+      valueString: "__public"
+    }
+  }`;
+
+  if (user) {
+    where = `{ 
+      operator: Or,
+      operands: [
+        {
+          path: ["user"],
+          operator: Equal,
+          valueString: "${user}"
+        },{
+          path: ["user"],
+          operator: Equal,
+          valueString: "__public"
+        }
+      ]
+    }`;
+  }
+
+  let payload = {
+    query: `{
+      Aggregate {
+        Document (
+          nearVector: {
+            vector: ${vector}
+            distance: ${distance}
+          }
+          where: ${where}
+        )
+        {
+          meta {
+            count
+          }
+        }
+      }
+      Get {
+        Document(
+          limit: ${pageSize}
+          offset: ${offset}
+          nearVector: {
+            vector: ${vector}
+            distance: ${distance}
+          }
+          where: ${where}
+        ) 
+        {
+          user
+          path
+          type
+          url
+          summary
+          content
+          _additional{
+            id
+            lastUpdateTimeUnix,
+            distance
+          }
+        }
+      }
+    }`,
+  };
+
+  response = post(url, payload, cfg.key);
+  data = response.data || {
+    Get: { Document: [] },
+    Aggregate: { Document: [{ meta: { count: 0 } }] },
+  };
+
+  let total = data.Aggregate.Document[0].meta.count;
+  let pages = Math.ceil(total / pageSize);
+  let prev = page > 1 ? page - 1 : 1;
+  let next = page < pages ? page + 1 : pages;
+  let items = data.Get.Document || [];
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+    item.id = item._additional.id;
+    item.lastUpdateTimeUnix = item._additional.lastUpdateTimeUnix;
+    item.distance = item._additional.distance;
+    delete item._additional;
+  }
+
+  return {
+    items: items,
+    total: total,
+    prev: prev,
+    next: next,
+    curr: page,
+    pages: pages,
+  };
+}
+
+function Find(id) {
+  let cfg = setting();
+  let url = `${cfg.host}/v1/objects/Document/${id}`;
+  let response = get(url, { consistency_level: "ONE" }, cfg.key);
+  response = response || {};
+  response.properties = response.properties || {};
+  for (let key in response.properties) {
+    response[key] = response.properties[key];
+  }
+  delete response.properties;
+  return response;
 }
 
 // === utils =================================
@@ -331,7 +466,18 @@ function get(url, query, key) {
     "X-OpenAI-Api-Key": key,
   });
 
+  if (response.code == 404) {
+    throw new Exception(`not found`, 404);
+  }
+
   if (response.code != 200) {
+    if (response.data && response.data.message && response.data.code) {
+      throw new Exception(
+        response.data.message.split(":")[0],
+        response.data.code
+      );
+    }
+
     let errors = response.data.error || response.data;
     let message = errors.length > 0 ? errors[0].message : "unknown";
     throw new Exception(message, response.code || 500);

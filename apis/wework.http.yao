@@ -1,6 +1,6 @@
 {
   "name": "客户接收消息回调域名",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "接收企业微信事件",
   "guard": "-",
   "paths": [

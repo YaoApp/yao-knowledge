@@ -1,6 +1,6 @@
 {
   "name": "OpenAPI会话",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "OpenAPI会话",
   "guard": "-",
   "paths": [

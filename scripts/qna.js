@@ -57,6 +57,31 @@ function AnswerStream(question, user, sid) {
 }
 
 /**
+ * Document search api
+ *
+ * yao run scripts.qna.Search 我要写个PPT,帮我找点资料 1
+ *
+ * @param {*} question
+ * @param {*} page
+ * @returns
+ */
+function Search(question, page) {
+  return Process("scripts.vector.Search", question, page, "张三");
+}
+
+/**
+ * Document find api
+ *
+ * yao run scripts.qna.Find e74838c6-99f6-4883-9f13-a74269557aa5
+ *
+ * @param {*} id
+ * @returns
+ */
+function Find(id) {
+  return Process("scripts.vector.Find", id);
+}
+
+/**
  * yao run scripts.qna.Stream "帮我写一个关于心血管健康的论文" 张三 371182ee-d76e-4680-a2b7-469cd1020041
  *
  * @param {*} messages
