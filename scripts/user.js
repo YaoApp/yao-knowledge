@@ -19,7 +19,6 @@ function Login(payload) {
   // check password
   let user = users[0] || {};
   Process("utils.pwd.Verify", payload.password, user.password);
-  delete user.password;
 
   // make jwt token
   // args[0]*: id
@@ -27,7 +26,8 @@ function Login(payload) {
   // args[2] : option: {"subject":"<主题>", "audience": "<接收人>", "issuer":"<签发人>", "timeout": "<有效期,单位秒>", "sid":"<会话ID>"}
   let sid = Process("utils.str.UUID");
   let timeout = 60 * 60;
-  let token = Process("utils.jwt.Make", user.id, user, {
+  let data = { sid: sid, name: user.name, title: user.title };
+  let token = Process("utils.jwt.Make", user.id, data, {
     subject: "Web Client Login",
     timeout: timeout,
     issuer: "user.Login",
@@ -36,6 +36,7 @@ function Login(payload) {
   });
 
   // save to session
+  delete user.password;
   Process("session.Set", "user", user, timeout, sid);
-  return token;
+  return { ...data, ...token };
 }
