@@ -21,7 +21,7 @@ jobs:
           rm -rf ../dist/.git
           rm -rf ../dist/logs
           mkdir ../dist/db
-          echo $SECRETS_FILE_CONTENTS > ../dist/.env
+          echo $SECRETS_FILE_CONTENTS | base64 -d  > ../dist/.env
           tar cvfz dist-knowledge.tar.gz -C ../dist/ .
         env:
           SECRETS_FILE_CONTENTS: ${{ secrets.SECRETS_FILE_CONTENTS }}
