@@ -5,7 +5,7 @@
 
 const distance = 0.2;
 const distancePrompts = 6;
-const pageSize = 2;
+const pageSize = 9;
 
 /**
  * the schema of the vector database

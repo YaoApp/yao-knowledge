@@ -43,4 +43,4 @@ jobs:
           port: 22
           username: root
           key: ${{ secrets.SSH_KEY }}
-          script: rm -rf /data/knowledge && mkdir -p /data/knowledge/logs && cd /data/knowledge && tar xvfz /root/dist-knowledge.tar.gz && supervisorctl reload
+          script: rm -rf /data/knowledge && mkdir -p /data/knowledge/logs && cd /data/knowledge && tar xvfz /root/dist-knowledge.tar.gz && supervisorctl reload && /usr/local/bin/yao-0418 migrate --force
