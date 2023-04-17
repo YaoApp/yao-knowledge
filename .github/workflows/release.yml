@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Version tags"
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: pack for Station (@Silicon Valley)
+        run: |
+          cp -r . ../dist
+          rm -rf ../dist/.git
+          rm -rf ../dist/logs
+          cp online.env ../dist/.env
+          mkdir ../dist/db
+          echo $SECRETS_FILE_CONTENTS > ../dist/.env
+          tar cvfz dist-knowledge.tar.gz -C ../dist/ .
+        env:
+          SECRETS_FILE_CONTENTS: ${{ secrets.SECRETS_FILE_CONTENTS }}
+
+      - name: Push to Earth (@Beijing)
+        uses: nogsantos/scp-deploy@master
+        with:
+          src: dist-knowledge.tar.gz
+          host: 139.199.30.36
+          remote: /root/
+          port: 22
+          user: root
+          key: ${{ secrets.SSH_KEY }}
+
+      - name: Distribution
+        uses: appleboy/ssh-action@master
+        with:
+          host: 139.199.30.36
+          port: 22
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          script: rm -rf /data/knowledge && mkdir -p /data/knowledge/logs && cd /data/knowledge && tar xvfz /root/dist-knowledge.tar.gz && supervisorctl reload
