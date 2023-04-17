@@ -20,7 +20,6 @@ jobs:
           cp -r . ../dist
           rm -rf ../dist/.git
           rm -rf ../dist/logs
-          cp online.env ../dist/.env
           mkdir ../dist/db
           echo $SECRETS_FILE_CONTENTS > ../dist/.env
           tar cvfz dist-knowledge.tar.gz -C ../dist/ .
