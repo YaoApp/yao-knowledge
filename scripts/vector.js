@@ -4,7 +4,7 @@
  */
 
 const distance = 0.2;
-const distancePrompts = 0.22;
+const distancePrompts = 6;
 const pageSize = 2;
 
 /**

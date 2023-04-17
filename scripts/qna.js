@@ -49,9 +49,38 @@ function AnswerStream(question) {
   let cfg = setting();
   let url = `${cfg.host}/v1/chat/completions`;
   let paylad = { model: cfg.model, messages: messages, user: sid };
+  let content = "";
+
   return stream(url, paylad, cfg.key, (data) => {
-    ssEvent("message", data.slice(5));
+    let response = data.slice(5);
+    ssEvent("message", response);
+    if (response == "") {
+      // content = content + "\n";
+      return 1;
+    }
+    try {
+      let resData = JSON.parse(response);
+      if (
+        resData &&
+        resData.choices &&
+        resData.choices[0].delta &&
+        resData.choices[0].delta.content
+      ) {
+        content = content + resData.choices[0].delta.content.replace(/\n/g, "");
+      }
+    } catch (error) {}
+
     if (data == "data: [DONE]") {
+      let history = getHistory(sid);
+      saveHistory(
+        sid,
+        [
+          { role: "user", content: question },
+          { role: "assistant", content: content },
+        ],
+        history
+      );
+
       cancel();
       return 0;
     }
