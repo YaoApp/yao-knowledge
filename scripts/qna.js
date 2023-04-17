@@ -14,8 +14,10 @@ const MaxTokens = 2048;
  * @param {*} question
  * @param {*} user
  */
-function Answer(question, user, sid) {
-  let messages = makeRequest(question, user, sid);
+function Answer(question) {
+  let sid = Process("session.ID");
+  let user = Process("session.Get", "user") || {};
+  let messages = makeRequest(question, user.id, sid);
 
   // send request
   let response = Process("scripts.openai.chat.Completions", messages, user);
@@ -39,9 +41,10 @@ function Answer(question, user, sid) {
   return { sid: sid, content: message.content };
 }
 
-function AnswerStream(question, user, sid) {
-  user = "tester";
-  let messages = makeRequest(question, user, sid);
+function AnswerStream(question) {
+  let sid = Process("session.ID");
+  let user = Process("session.Get", "user") || {};
+  let messages = makeRequest(question, user.id, sid);
 
   let cfg = setting();
   let url = `${cfg.host}/v1/chat/completions`;
@@ -66,7 +69,8 @@ function AnswerStream(question, user, sid) {
  * @returns
  */
 function Search(question, page) {
-  return Process("scripts.vector.Search", question, page, "张三");
+  let user = Process("session.Get", "user") || {};
+  return Process("scripts.vector.Search", question, page, user.id);
 }
 
 /**
@@ -79,29 +83,6 @@ function Search(question, page) {
  */
 function Find(id) {
   return Process("scripts.vector.Find", id);
-}
-
-/**
- * yao run scripts.qna.Stream "帮我写一个关于心血管健康的论文" 张三 371182ee-d76e-4680-a2b7-469cd1020041
- *
- * @param {*} messages
- * @param {*} ctx
- * @returns
- */
-function Stream(question, user, sid) {
-  let messages = [{ role: "user", content: question }];
-  let cfg = setting();
-  let url = `${cfg.host}/v1/chat/completions`;
-  messages = messages || [];
-  let paylad = { model: cfg.model, messages: messages, user: sid };
-  return stream(url, paylad, cfg.key, (data) => {
-    ssEvent("message", data.slice(5));
-    if (data == "data: [DONE]") {
-      cancel();
-      return 0;
-    }
-    return 1;
-  });
 }
 
 // === utils =================================

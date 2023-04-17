@@ -2,7 +2,7 @@
   "name": "文档接口",
   "version": "1.0.3",
   "description": "文档接口",
-  "guard": "-",
+  "guard": "bearer-jwt",
   "paths": [
     {
       "path": "/search",
