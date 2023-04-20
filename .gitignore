@@ -4,3 +4,4 @@ logs
 .env
 .DS_Store
 online.env
+dist
