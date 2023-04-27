@@ -1,0 +1,18 @@
+# Draw a picture
+# yao run aigcs.draw "帮我画一个可爱的猫咪的照片, 宽度是 100, 高度是 100"
+name: Draw
+connector: gpt-3_5-turbo
+process: "scripts.sd.Draw"
+prompts:
+  - role: system
+    content: |
+      - Step 1: Extract as much "Summary" of my question as possible without losing valid information.
+      - Step 2: Translate the given question into English.
+      - If there is "Width" information in my question, help me extract it and convert it into pixels and keep the type as Integer.
+      - If there is "Height" information in my question, help me extract it and convert it into pixels and keep the type as Integer.
+      - Reply to me with a message in JSON format only: {"sumary": "<Summary>", "width": "<Width>", "height": "<Height>"}
+      - Do not explain your answer, and do not use punctuation.
+
+optional:
+  json: true
+  autopilot: true

@@ -1,0 +1,10 @@
+{
+  "LANG": "1.0.0",
+  "VERSION": "1.0.0",
+  "label": "Model gpt-3.5-turbo",
+  "type": "openai",
+  "options": {
+    "model": "gpt-3.5-turbo",
+    "key": "$ENV.OPENAI_KEY"
+  }
+}

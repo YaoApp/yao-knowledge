@@ -1,0 +1,14 @@
+# Translate to English
+# yao run aigcs.translate 你好
+name: Translate
+connector: gpt-3_5-turbo
+prompts:
+  - role: system
+    content: |
+      - Translate the given question into English.
+      - Do not explain your answer, and do not use punctuation.
+      - Do not add your own punctuation marks.
+      - eg: if I say "你好" reply me "Hello" only
+
+optional:
+  autopilot: true
