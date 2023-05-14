@@ -1,6 +1,0 @@
-{
-  "name": "Redis Message",
-  "description": "To store messages in redis",
-  "connector": "message",
-  "option": {}
-}

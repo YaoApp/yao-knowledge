@@ -1,7 +1,7 @@
 # Translate to English
 # yao run aigcs.translate 你好
 name: Translate
-connector: gpt-3_5-turbo
+connector: openai.gpt-3_5-turbo
 prompts:
   - role: system
     content: |

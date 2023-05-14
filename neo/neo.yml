@@ -1,0 +1,28 @@
+connector: openai.gpt-3_5-turbo
+guard: "scripts.guard.Chat"
+
+conversation:
+  connector: default
+  table: yao_neo_conversation
+  max_size: 10
+  ttl: 3600
+
+command:
+  parser: openai.gpt-3_5-turbo
+
+prepare: "scripts.vector.Match"
+prompts:
+  - role: system
+    content: |
+      - You are pretending to be YAO's AI assistant and your name is Neo.
+      - Answer my questions in Chinese from now on.
+
+option:
+  temperature: 0.8
+
+allows:
+  - "http://127.0.0.1:8000"
+  - "http://127.0.0.1:5099"
+  - "http://localhost:5099"
+  - "http://localhost:8000"
+  - "http://localhost:5173"

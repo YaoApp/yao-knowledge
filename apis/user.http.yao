@@ -8,7 +8,7 @@
       "path": "/login",
       "guard": "-",
       "method": "POST",
-      "process": "scripts.user.Login",
+      "process": "scripts.guard.Login",
       "in": [":payload"],
       "out": { "status": 200, "type": "application/json" }
     },

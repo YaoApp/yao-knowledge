@@ -1,0 +1,10 @@
+{
+  "LANG": "1.0.0",
+  "VERSION": "1.0.0",
+  "label": "whisper-1",
+  "type": "openai",
+  "options": {
+    "model": "whisper-1",
+    "key": "$ENV.OPENAI_KEY"
+  }
+}
