@@ -7,14 +7,14 @@
     {
       "path": "/search",
       "method": "GET",
-      "process": "scripts.qna.Search",
+      "process": "scripts.vector.Search",
       "in": ["$query.question", "$query.page"],
       "out": { "status": 200, "type": "application/json" }
     },
     {
       "path": "/find/:id",
       "method": "GET",
-      "process": "scripts.qna.Find",
+      "process": "scripts.vector.Find",
       "in": ["$param.id"],
       "out": { "status": 200, "type": "application/json" }
     }

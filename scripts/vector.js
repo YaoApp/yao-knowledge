@@ -4,7 +4,7 @@
  */
 
 const distance = 0.2;
-const distancePrompts = 6;
+const distancePrompts = 2;
 const pageSize = 9;
 
 function Match(context, messages) {
@@ -264,6 +264,7 @@ function Query(input, user) {
       }
     }`,
   };
+
   let response = post(url, payload, cfg.key);
   let data = response.data || { Get: { Document: [] } };
   let items = data.Get.Document || [];
@@ -293,6 +294,10 @@ function Search(input, page, user) {
   let vector = getVector(input);
   let cfg = setting();
   let url = `${cfg.host}/v1/graphql`;
+  if (!user) {
+    let info = Process("session.Get", "user") || {};
+    user = info.id;
+  }
 
   let where = `{ 
     operator: Or,
@@ -408,14 +413,20 @@ function Find(id) {
 // === utils =================================
 
 function getVector(input, user) {
-  let response = Process("scripts.openai.Embeddings", input, user);
+  let response = Process(
+    "openai.Embeddings",
+    "openai.text-embedding-ada-002",
+    input,
+    user
+  );
+
   let data = response.data || [];
   let embedding = data.length > 0 ? data[0].embedding : [];
   return JSON.stringify(embedding);
 }
 
 function getSummary(content) {
-  let response = Process("scripts.openai.chat.Completions", [
+  let response = Process("openai.chat.Completions", "openai.gpt-3_5-turbo", [
     {
       role: "system",
       content: `
@@ -435,12 +446,81 @@ function getSummary(content) {
   return message.content;
 }
 
+function makeRequest(question, user, sid) {
+  sid = sid || Process("utils.str.UUID");
+  let history = getHistory(sid); // get the conversation history
+  let docs = getDocs(question, history, user); // query the knowledge base
+  let summaries = getSummaries(docs); // get the summaries of the knowledge base
+
+  let messages = [];
+  let size = 0;
+
+  while (history.messages.length >= 0) {
+    messages = [
+      {
+        role: "system",
+        content: `
+    - The above content is my knowledge base.
+    - Please prioritize answering user questions based on my knowledge base provided to you.
+    `,
+      },
+      ...history.messages,
+      { role: "user", content: question },
+    ];
+
+    size = Process("scripts.openai.TokenSize", JSON.stringify(messages));
+    if (size < MaxTokens - 1000) {
+      break;
+    }
+
+    history.messages.shift();
+    history.messages.shift();
+  }
+
+  // add the documents to the messages
+  if (docs.length > 0) {
+    messages = [
+      { role: "system", content: JSON.stringify(docs[0]) },
+      ...messages,
+    ];
+
+    size = Process("scripts.openai.TokenSize", JSON.stringify(messages));
+  }
+
+  // add the summary to the messages
+  if (size < MaxTokens && summaries.length > 0) {
+    messages = [
+      { role: "system", content: JSON.stringify(summaries) },
+      ...messages,
+    ];
+
+    size = Process("scripts.openai.TokenSize", JSON.stringify(messages));
+  }
+
+  // add more documents to the messages
+  if (size < MaxTokens && docs.length > 1) {
+    for (let i = 1; i < docs.length; i++) {
+      messages = [
+        { role: "system", content: JSON.stringify(docs[i]) },
+        ...messages,
+      ];
+
+      size = Process("scripts.openai.TokenSize", JSON.stringify(messages));
+      if (size >= MaxTokens) {
+        break;
+      }
+    }
+  }
+
+  return messages;
+}
+
 /**
  * Generate test data
  * yao run scripts.vector.testContent
  */
 function testContent() {
-  let response = Process("scripts.openai.chat.Completions", [
+  let response = Process("openai.chat.Completions", "openai.gpt-3_5-turbo", [
     { role: "system", content: JSON.stringify(DocumentSchema.properties) },
     {
       role: "system",
@@ -458,7 +538,7 @@ function testContent() {
     },
     {
       role: "user",
-      content: `Generate 10 items, You must only respond JSON Object.`,
+      content: `Generate 5 items, You must only respond JSON Object.`,
     },
   ]);
 
