@@ -39,6 +39,7 @@ function Save(payload) {
   const fs = new FS("system");
   const id =
     payload.fingerprint || Process("utils.str.UUID").replaceAll("-", "");
+
   const file = `${id}.pdf`;
   if (fs.Exists(file)) {
     throw new Exception(`${id} content exits`, 409);
@@ -46,6 +47,20 @@ function Save(payload) {
 
   fs.WriteFileBase64(file, payload.content, 0644);
   return { code: 200, message: "ok" };
+}
+
+/**
+ * PDF File
+ * @param {*} file
+ */
+function Pdf(file) {
+  const fs = new FS("system");
+  const path = fs.Abs("111648967bdcb7c68e0a9197346b8cdf.pdf");
+  console.log(path);
+
+  const content = Process("plugins.pdf.Contenx", path);
+
+  console.log(content);
 }
 
 /**
