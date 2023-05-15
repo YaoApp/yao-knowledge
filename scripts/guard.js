@@ -16,8 +16,6 @@ function Chat(path, params, query, payload, headers) {
 
   jwt = token[0] || "";
   jwt = jwt.replace("Bearer ", "");
-  console.log(jwt);
-
   let data = Process("utils.jwt.Verify", jwt);
   return { __sid: data.sid, __global: data.data };
 }

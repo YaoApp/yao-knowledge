@@ -46,6 +46,25 @@ function Save(payload) {
   }
 
   fs.WriteFileBase64(file, payload.content, 0644);
+
+  // =============================================================================
+  // Read the PDF content
+  // @todo You can add your own code here
+  // @see https://github.com/YaoApp/yao-knowledge-pdf
+  // ==============================================================================
+  const pages = Process("plugins.pdf.Content", fs.Abs(file));
+  if (pages && pages.code && pages.message) {
+    console.log(
+      "",
+      `pdf.so plugin error: ${pages.code} ${pages.message}`,
+      "maybe you need install pdf plugin see here: https://github.com/YaoApp/yao-knowledge-pdf"
+    );
+
+    fs.Remove(file);
+    throw new Exception(pages.message, pages.code);
+  }
+
+  console.log(pages);
   return { code: 200, message: "ok" };
 }
 
