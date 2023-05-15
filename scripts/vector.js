@@ -44,7 +44,7 @@ function Save(payload) {
     throw new Exception(`${id} content exits`, 409);
   }
 
-  fs.WriteFileBase64(file, payload.content);
+  fs.WriteFileBase64(file, payload.content, 0644);
   return { code: 200, message: "ok" };
 }
 
