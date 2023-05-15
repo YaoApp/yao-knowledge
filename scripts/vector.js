@@ -50,17 +50,20 @@ function Save(payload) {
 }
 
 /**
- * PDF File
+ * ReadFile the doc file
  * @param {*} file
  */
-function Pdf(file) {
+function ReadFile(file) {
   const fs = new FS("system");
-  const path = fs.Abs("111648967bdcb7c68e0a9197346b8cdf.pdf");
-  console.log(path);
+  const path = fs.Abs(file);
 
-  const content = Process("plugins.pdf.Contenx", path);
+  // you can add your own code here
+  const content = Process("plugins.pdf.Content", path);
+  if (content && content.code && content.message) {
+    throw new Exception(content.message, content.code);
+  }
 
-  console.log(content);
+  return content;
 }
 
 /**
