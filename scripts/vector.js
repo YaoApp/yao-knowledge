@@ -7,6 +7,12 @@ const distance = 0.2;
 const distancePrompts = 2;
 const pageSize = 9;
 
+/**
+ * Query content from the vector database
+ * @param {*} context
+ * @param {*} messages
+ * @returns
+ */
 function Match(context, messages) {
   console.log(context, messages);
   return [
@@ -22,6 +28,24 @@ function Match(context, messages) {
      `,
     },
   ];
+}
+
+/**
+ * Save the content to the vector database
+ * @param {*} payload
+ * @returns
+ */
+function Save(payload) {
+  const fs = new FS("system");
+  const id =
+    payload.fingerprint || Process("utils.str.UUID").replaceAll("-", "");
+  const file = `${id}.pdf`;
+  if (fs.Exists(file)) {
+    throw new Exception(`${id} content exits`, 409);
+  }
+
+  fs.WriteFileBase64(file, payload.content);
+  return { code: 200, message: "ok" };
 }
 
 /**

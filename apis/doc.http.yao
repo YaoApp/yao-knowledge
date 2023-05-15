@@ -17,6 +17,14 @@
       "process": "scripts.vector.Find",
       "in": ["$param.id"],
       "out": { "status": 200, "type": "application/json" }
+    },
+    {
+      "path": "upload",
+      "method": "POST",
+      "guard": "-",
+      "process": "scripts.vector.Save",
+      "in": [":payload"],
+      "out": { "status": 200, "type": "application/json" }
     }
   ]
 }
