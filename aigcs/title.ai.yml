@@ -1,0 +1,15 @@
+# Get the title of the given text.
+# yao run aigcs.title 这是一只懒狗
+name: Title
+connector: openai.gpt-3_5-turbo
+prompts:
+  - role: system
+    content: |
+      - Reply the title of the content.
+      - The maximum length of the title is 20 characters.
+      - Reply to me must be in the same language as the content.
+      - Do not explain your answer, and do not use punctuation.
+      - Do not add your own punctuation marks.
+
+optional:
+  autopilot: true

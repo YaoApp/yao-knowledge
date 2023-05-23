@@ -3,6 +3,7 @@
  * Will be replaced by the new vector process
  */
 
+const MaxTokens = 2048;
 const distance = 0.2;
 const distancePrompts = 2;
 const pageSize = 9;
@@ -64,8 +65,73 @@ function Save(payload) {
     throw new Exception(pages.message, pages.code);
   }
 
+  fs.Remove(file); // debug
+
+  console.log("Parse the PDF title and summary...");
+  const article = Reduce(pages.join("\n\n"));
+  const title = Process("aigcs.title", article);
+  const summary = Process("aigcs.summary", article);
+
+  // Save the document to the vector database
+  let part = 0;
+  pages.forEach((content, index) => {
+    content = content.replaceAll(" ", "");
+    content = content.replaceAll("\n", "");
+    content = content.replaceAll("\r", "");
+
+    // Ignore the short content
+    if (content == "" || content.length < 20) {
+      return;
+    }
+
+    // =============================================================================
+    // Save the document to the vector database
+    // @todo You can add your own code here
+    // ==============================================================================
+    const doc = {
+      type: "pdf",
+      path: file,
+      fingerprint: id,
+      user: "__public",
+      title: title,
+      summary: summary,
+      content: content,
+      part: part,
+    };
+
+    const result = Process("scripts.doc.Insert", doc);
+    if (result && result.code && result.message) {
+      throw new Exception(result.message, result.code);
+    }
+
+    part = part + 1;
+
+    // Debug
+    console.log(doc);
+
+    // openai api limit
+    time.Sleep(200);
+  });
+
+  // debug
   console.log(pages);
   return { code: 200, message: "ok" };
+}
+
+/**
+ * Validate the token size
+ * @param {*} content
+ */
+function Reduce(content) {
+  var tokenSize = MaxTokens;
+  while (tokenSize >= MaxTokens) {
+    // process: openai.Tiktoken
+    // args[0]: is the model name
+    // args[1]: is the content
+    tokenSize = Process("openai.Tiktoken", "gpt-3.5-turbo", content);
+    content = content.substring(0, content.length - 128);
+  }
+  return content;
 }
 
 /**

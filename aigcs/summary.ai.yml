@@ -1,0 +1,15 @@
+# Get the summary of the given text.
+# yao run aigcs.summary 这是一只懒狗
+name: Summary
+connector: openai.gpt-3_5-turbo
+prompts:
+  - role: system
+    content: |
+      - Reply the summary of the content.
+      - The maximum length of the summary is 200 characters.
+      - Reply to me must be in the same language as the content.
+      - Do not explain your answer, and do not use punctuation.
+      - Do not add your own punctuation marks.
+
+optional:
+  autopilot: true
