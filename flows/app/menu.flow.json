@@ -5,24 +5,20 @@
     "setting": [
       {
         "icon": "icon-settings",
-        "id": 999999,
         "name": "设置",
-        "path": "/x/Form/pet/1/edit",
+        "path": "/x/Form/setting.doc/1/edit",
         "dot": true,
         "children": [
           {
-            "id": 10002,
-            "name": "系统设置",
-            "badge": 24,
-            "path": "/x/Form/pet/1/edit"
+            "name": "文档设置",
+            "path": "/x/Form/setting.doc/1/edit"
           },
-          { "id": 10002, "name": "系统设置", "path": "/setting" }
+          { "name": "系统设置", "path": "/setting" }
         ]
       }
     ],
     "items": [
       {
-        "id": 1,
         "blocks": 0,
         "icon": "icon-activity",
         "name": "图表",
@@ -31,7 +27,6 @@
         "visible_menu": 0
       },
       {
-        "id": 1,
         "blocks": 0,
         "icon": "icon-users",
         "name": "用户",
@@ -40,62 +35,12 @@
         "visible_menu": 0
       },
       {
-        "id": 1,
         "blocks": 0,
         "icon": "icon-file-text",
         "name": "文档",
         "parent": null,
         "path": "/x/Table/doc",
         "visible_menu": 0
-      },
-      {
-        "id": 2,
-        "blocks": 0,
-        "icon": "icon-book",
-        "name": "表格",
-        "parent": null,
-        "path": "/x/Table/pet",
-        "visible_menu": 1,
-        "children": [
-          {
-            "blocks": 0,
-            "icon": "icon-book",
-            "name": "宠物列表",
-            "id": 2010,
-            "parent": 2,
-            "path": "/x/Table/pet",
-            "visible_menu": 1
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "blocks": 0,
-        "icon": "icon-clipboard",
-        "name": "表单",
-        "parent": null,
-        "path": "/x/Form/pet/1/edit",
-        "visible_menu": 1,
-        "children": [
-          {
-            "blocks": 0,
-            "icon": "icon-clipboard",
-            "name": "编辑模式",
-            "id": 2010,
-            "parent": 2,
-            "path": "/x/Form/pet/1/edit",
-            "visible_menu": 1
-          },
-          {
-            "blocks": 0,
-            "icon": "icon-clipboard",
-            "name": "查看模式",
-            "id": 2010,
-            "parent": 2,
-            "path": "/x/Form/pet/1/view",
-            "visible_menu": 1
-          }
-        ]
       }
     ]
   }

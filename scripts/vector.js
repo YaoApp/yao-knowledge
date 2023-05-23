@@ -75,7 +75,7 @@ function Save(payload) {
     title = Process("aigcs.title", article);
     summary = Process("aigcs.summary", article);
   } catch (e) {
-    s.Remove(file);
+    fs.Remove(file);
     throw e;
   }
 

@@ -1,6 +1,0 @@
-{
-  "name": "Pet Admin Bind Model",
-  "action": {
-    "bind": { "model": "pet", "option": { "form": "pet" } }
-  }
-}

@@ -28,18 +28,18 @@
       "operation": {
         "fold": false,
         "actions": [
+          // {
+          //   "action": {
+          //     "Common.openModal": {
+          //       "width": 1200,
+          //       "Form": { "type": "view", "model": "doc" }
+          //     }
+          //   },
+          //   "title": "查看",
+          //   "icon": "icon-eye"
+          // },
           {
-            "action": {
-              "Common.openModal": {
-                "width": 1200,
-                "Form": { "type": "view", "model": "doc" }
-              }
-            },
-            "title": "查看",
-            "icon": "icon-eye"
-          },
-          {
-            "title": "下载导入模板",
+            "title": "下载",
             "icon": "icon-download",
             "showWhenAdd": true,
             "showWhenView": true,

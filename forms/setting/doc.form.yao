@@ -1,0 +1,80 @@
+{
+  "name": "文档设置",
+  "action": {
+    "bind": { "option": {} },
+    "find": { "process": "scripts.doc.AdminSettingFind" },
+    "delete": { "process": "scripts.doc.AdminSettingReset" }
+  },
+  "layout": {
+    "actions": [
+      {
+        "title": "刷新",
+        "icon": "icon-check",
+        "showWhenAdd": true,
+        "style": "success",
+        "action": [
+          { "name": "Refetch", "payload": {}, "type": "Common.refetch" }
+        ]
+      },
+      {
+        "title": "重置",
+        "icon": "icon-check",
+        "showWhenAdd": true,
+        "style": "danger",
+        "action": [
+          {
+            "name": "Confirm",
+            "payload": {
+              "content": "请确认重置，重置后数据无法恢复",
+              "title": "确认"
+            },
+            "type": "Common.confirm"
+          },
+          { "name": "Delete", "payload": {}, "type": "Form.delete" },
+          { "name": "Refetch", "payload": {}, "type": "Common.refetch" }
+        ]
+      }
+    ],
+    "form": {
+      "sections": [
+        {
+          "columns": [
+            { "width": 24, "name": "Schema Class" },
+            { "width": 24, "name": "Documents" },
+            { "width": 24, "name": "Document Parts" }
+          ]
+        }
+      ],
+      "props": {}
+    },
+    "config": { "showAnchor": false },
+    "primary": "id"
+  },
+  "fields": {
+    "form": {
+      "Schema Class": {
+        "bind": "schema",
+        "edit": {
+          "type": "Input",
+          "props": { "disabled": true, "placeholder": "Schema Class" }
+        }
+      },
+
+      "Documents": {
+        "bind": "documents",
+        "edit": {
+          "type": "Input",
+          "props": { "disabled": true, "placeholder": "Documents" }
+        }
+      },
+
+      "Document Parts": {
+        "bind": "parts",
+        "edit": {
+          "type": "Input",
+          "props": { "disabled": true, "placeholder": "Parts" }
+        }
+      }
+    }
+  }
+}

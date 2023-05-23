@@ -129,12 +129,113 @@ function Get() {
 }
 
 /**
+ * Get GetFiles
+ * yao run scripts.doc.GetDocs
+ * @returns
+ */
+function GetFiles(query) {
+  let type = "pdf";
+  if (
+    query &&
+    query.wheres &&
+    query.wheres[0] &&
+    query.wheres[0].column == "type"
+  ) {
+    type = query.wheres[0].value;
+  }
+
+  let payload = `{
+    Aggregate {
+        Document(
+          groupBy: ["fingerprint"]
+          where: {
+            path: ["type"],
+            operator: Equal,
+            valueString:"${type}"
+          }
+        ){
+          groupedBy {
+            value
+            path
+          }
+          meta {  count }
+        }
+    }
+}`;
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+  let objects = post(url, { query: payload }, cfg.key);
+  let data = objects.data || {};
+  let ids = [];
+
+  if (
+    data &&
+    data.Aggregate &&
+    data.Aggregate.Document &&
+    data.Aggregate.Document.length > 0
+  ) {
+    data.Aggregate.Document.forEach((doc) => {
+      if (doc.groupedBy && doc.groupedBy.value) {
+        ids.push(`${doc.groupedBy.value}.pdf`);
+      }
+    });
+  }
+
+  return ids;
+}
+
+/**
+ * Admin Setting Process: Reset document
+ * @param {*} id
+ */
+function AdminSettingReset(id) {
+  try {
+    const fs = new FS("system");
+    let files = GetFiles();
+    files.forEach((file) => {
+      fs.Remove(file);
+    });
+  } catch (e) {}
+
+  SchemaReset();
+  return id;
+}
+
+/**
+ * Admin Setting  Process:  document Setting
+ * @param {*} id
+ * @returns
+ */
+function AdminSettingFind(id) {
+  let cfg = setting();
+  let url = `${cfg.host}/v1/objects/${id}`;
+  return {
+    id: id,
+    schema: "Document",
+    documents: adminDocsCount({}),
+    parts: adminCount({}),
+  };
+}
+
+/**
  * Admin Process: Remove document
  * @param {*} id
  * @returns
  */
 function AdminDelete(id) {
   return DeletePart(id);
+}
+
+/**
+ * Admin Process: Find document
+ * @param {*} id
+ * @returns
+ */
+function AdminFind(id) {
+  let cfg = setting();
+  let url = `${cfg.host}/v1/objects/${id}`;
+  return get(url, null, cfg.key);
 }
 
 /**
@@ -274,6 +375,60 @@ function adminCount(query) {
     data.Aggregate.Document.length > 0
   ) {
     return data.Aggregate.Document[0].meta.count;
+  }
+
+  return 0;
+}
+
+/**
+ * count documents
+ * @param {*} query
+ * @param {*} page
+ * @param {*} pageSize
+ * yao run scripts.doc.adminDocsCount
+ */
+function adminDocsCount(query) {
+  let type = "pdf";
+  if (
+    query &&
+    query.wheres &&
+    query.wheres[0] &&
+    query.wheres[0].column == "type"
+  ) {
+    type = query.wheres[0].value;
+  }
+
+  let payload = `{
+    Aggregate {
+        Document(
+          groupBy: ["fingerprint"]
+          where: {
+            path: ["type"],
+            operator: Equal,
+            valueString:"${type}"
+          }
+        ){
+          groupedBy {
+            value
+            path
+          }
+          meta {  count }
+        }
+    }
+}`;
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+  let objects = post(url, { query: payload }, cfg.key);
+  let data = objects.data || {};
+
+  if (
+    data &&
+    data.Aggregate &&
+    data.Aggregate.Document &&
+    data.Aggregate.Document.length > 0
+  ) {
+    return data.Aggregate.Document.length;
   }
 
   return 0;
