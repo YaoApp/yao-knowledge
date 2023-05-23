@@ -3,7 +3,7 @@
  * Will be replaced by the new vector process
  */
 
-const MaxTokens = 2048;
+const MaxTokens = 1536;
 const distance = 0.2;
 const distancePrompts = 2;
 const pageSize = 9;
@@ -131,12 +131,17 @@ function Save(payload) {
  */
 function Reduce(content) {
   var tokenSize = MaxTokens;
+  if (content.length > 5000) {
+    content = content.substring(0, 5000);
+  }
+
   while (tokenSize >= MaxTokens) {
     // process: openai.Tiktoken
     // args[0]: is the model name
     // args[1]: is the content
     tokenSize = Process("openai.Tiktoken", "gpt-3.5-turbo", content);
     content = content.substring(0, content.length - 128);
+    console.log(`Reduce the content size to ${tokenSize}`);
   }
   return content;
 }
