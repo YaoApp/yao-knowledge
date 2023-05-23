@@ -9,7 +9,7 @@
     "actions": [
       {
         "title": "刷新",
-        "icon": "icon-check",
+        "icon": "icon-refresh-ccw",
         "showWhenAdd": true,
         "style": "success",
         "action": [
@@ -18,7 +18,7 @@
       },
       {
         "title": "重置",
-        "icon": "icon-check",
+        "icon": "icon-trash",
         "showWhenAdd": true,
         "style": "danger",
         "action": [
