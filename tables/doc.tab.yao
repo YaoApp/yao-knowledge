@@ -1,0 +1,98 @@
+{
+  "name": "文档",
+  "action": {
+    "bind": {},
+    "search": {
+      "process": "scripts.doc.AdminSearch",
+      "default": [{ "orders": [{ "column": "id", "option": "desc" }] }, 1, 10]
+    },
+    "delete": { "process": "scripts.doc.AdminDelete" }
+  },
+  "layout": {
+    "primary": "id",
+    "header": { "preset": {} },
+    "filter": {
+      "columns": [{ "name": "类型", "width": 4 }],
+      "actions": []
+    },
+    "table": {
+      "props": {},
+      "columns": [
+        { "width": 300, "name": "名称" },
+        { "width": 100, "name": "片段" },
+        { "width": 160, "name": "文件" },
+        { "width": 160, "name": "创建时间" },
+        { "width": 160, "name": "更新时间" },
+        { "name": "摘要" }
+      ],
+      "operation": {
+        "fold": false,
+        "actions": [
+          {
+            "action": {
+              "Common.openModal": {
+                "width": 1200,
+                "Form": { "type": "view", "model": "doc" }
+              }
+            },
+            "title": "查看",
+            "icon": "icon-eye"
+          },
+          {
+            "title": "下载导入模板",
+            "icon": "icon-download",
+            "showWhenAdd": true,
+            "showWhenView": true,
+            "action": {
+              "Common.historyPush": {
+                "pathname": "/api/doc/download/{{path}}",
+                "public": true
+              }
+            }
+          },
+          {
+            "icon": "icon-trash-2",
+            "action": [
+              {
+                "name": "Confirm",
+                "payload": {
+                  "content": "请确认删除，删除后数据无法恢复",
+                  "title": "确认"
+                },
+                "type": "Common.confirm"
+              },
+              { "name": "Delete", "payload": {}, "type": "Table.delete" }
+            ],
+            "style": "danger",
+            "title": "删除"
+          }
+        ]
+      }
+    }
+  },
+  "fields": {
+    "filter": {
+      "类型": {
+        "bind": "where.type.eq",
+        "edit": {
+          "type": "Select",
+          "props": { "options": [{ "label": "pdf", "value": "pdf" }] }
+        }
+      }
+    },
+    "table": {
+      "名称": { "bind": "name", "view": { "type": "Text", "props": {} } },
+      "片段": { "bind": "part", "view": { "type": "Text", "props": {} } },
+      "文件": { "bind": "path", "view": { "type": "Text", "props": {} } },
+      "摘要": { "bind": "summary", "view": { "type": "Text", "props": {} } },
+      "创建时间": {
+        "bind": "created_at",
+        "view": { "type": "Text", "props": { "format": "YYYY年M月D日" } }
+      },
+      "更新时间": {
+        "bind": "updated_at",
+        "view": { "type": "Text", "props": { "format": "YYYY年M月D日" } }
+      }
+    }
+  }
+}

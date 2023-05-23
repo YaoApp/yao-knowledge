@@ -106,7 +106,7 @@ function Insert(data) {
   data.user = data.user || "__public";
   data.path = data.path || "";
   data.url = data.url || "";
-  data.title = data.title || Process("aigcs.title", data.content);
+  data.name = data.name || Process("aigcs.title", data.content);
   data.summary = data.summary || Process("aigcs.summary", data.content);
 
   // Insert document
@@ -126,6 +126,173 @@ function Get() {
   let cfg = setting();
   let url = `${cfg.host}/v1/objects`;
   return get(url, null, cfg.key);
+}
+
+/**
+ * Admin Process: Remove document
+ * @param {*} id
+ * @returns
+ */
+function AdminDelete(id) {
+  return DeletePart(id);
+}
+
+/**
+ * Admin Process: Search documents
+ * @param {*} query
+ * @param {*} page
+ * @param {*} pageSize
+ */
+function AdminSearch(query, page, pageSize) {
+  let type = "pdf";
+  if (
+    query &&
+    query.wheres &&
+    query.wheres[0] &&
+    query.wheres[0].column == "type"
+  ) {
+    type = query.wheres[0].value;
+  }
+
+  let total = adminCount(query);
+  let pagecnt = Math.ceil(total / pageSize);
+
+  const offset = (page - 1) * pageSize;
+  let payload = `{
+    Get {
+      Document(
+        offset: ${offset}
+        limit: ${pageSize}
+        where: {
+            path: ["type"],
+            operator: Equal,
+            valueString:"${type}"
+        }
+        sort: [
+            {path: ["_lastUpdateTimeUnix"], order: desc}
+        ]
+      ) 
+      { 
+        name
+        path
+        summary
+        fingerprint
+        part
+        _additional{
+            id
+            creationTimeUnix
+            lastUpdateTimeUnix
+        }
+      }
+    }
+  }`;
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+  let objects = post(url, { query: payload }, cfg.key);
+  let items = objects.data || {};
+  let data = [];
+  if (
+    items &&
+    items.Get &&
+    items.Get.Document &&
+    items.Get.Document.length > 0
+  ) {
+    items.Get.Document.forEach((item) => {
+      data.push({
+        id: item._additional.id,
+        name: item.name,
+        path: item.path,
+        summary:
+          item.summary.length > 50
+            ? item.summary.substring(0, 50) + "..."
+            : item.summary,
+        fingerprint: item.fingerprint,
+        part: `片段: ${item.part + 1}`,
+
+        created_at: new Date(
+          parseInt(item._additional.creationTimeUnix)
+        ).toLocaleString(),
+
+        updated_at: new Date(
+          parseInt(item._additional.lastUpdateTimeUnix)
+        ).toLocaleString(),
+      });
+    });
+  }
+
+  return {
+    data: data,
+    next: -1,
+    page: parseInt(page),
+    pagecnt: pagecnt,
+    prev: -1,
+    total: total,
+  };
+}
+
+/**
+ * count documents
+ * @param {*} query
+ * @param {*} page
+ * @param {*} pageSize
+ */
+function adminCount(query) {
+  let type = "pdf";
+  if (
+    query &&
+    query.wheres &&
+    query.wheres[0] &&
+    query.wheres[0].column == "type"
+  ) {
+    type = query.wheres[0].value;
+  }
+
+  let payload = `{
+    Aggregate {
+        Document(
+            where: {
+                path: ["type"],
+                operator: Equal,
+                valueString:"${type}"
+            }
+        ){
+            meta {  count }
+        }
+    }
+}`;
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+  let objects = post(url, { query: payload }, cfg.key);
+  let data = objects.data || {};
+
+  if (
+    data &&
+    data.Aggregate &&
+    data.Aggregate.Document &&
+    data.Aggregate.Document.length > 0
+  ) {
+    return data.Aggregate.Document[0].meta.count;
+  }
+
+  return 0;
+}
+
+/**
+ * Delete document
+ * yao run scripts.doc.Delete 819281
+ * @param {*} fingerprint
+ */
+function DeletePart(id) {
+  if (!id) {
+    throw new Exception("id is required", 400);
+  }
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/objects/${id}?consistency_level=ALL`;
+  remove(url, {}, cfg.key);
+  return id;
 }
 
 /**

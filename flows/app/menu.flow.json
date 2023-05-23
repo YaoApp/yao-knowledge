@@ -40,6 +40,15 @@
         "visible_menu": 0
       },
       {
+        "id": 1,
+        "blocks": 0,
+        "icon": "icon-file-text",
+        "name": "文档",
+        "parent": null,
+        "path": "/x/Table/doc",
+        "visible_menu": 0
+      },
+      {
         "id": 2,
         "blocks": 0,
         "icon": "icon-book",

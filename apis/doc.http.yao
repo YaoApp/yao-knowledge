@@ -19,12 +19,20 @@
       "out": { "status": 200, "type": "application/json" }
     },
     {
-      "path": "upload",
+      "path": "/upload",
       "method": "POST",
       "guard": "-",
       "process": "scripts.vector.Save",
       "in": [":payload"],
       "out": { "status": 200, "type": "application/json" }
+    },
+    {
+      "path": "/download/*file",
+      "method": "GET",
+      "guard": "-",
+      "process": "fs.system.ReadFile",
+      "in": ["$param.file"],
+      "out": { "status": 200, "type": "application/pdf" }
     }
   ]
 }

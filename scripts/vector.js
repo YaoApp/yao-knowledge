@@ -65,12 +65,19 @@ function Save(payload) {
     throw new Exception(pages.message, pages.code);
   }
 
-  fs.Remove(file); // debug
+  // fs.Remove(file); // debug
 
   console.log("Parse the PDF title and summary...");
   const article = Reduce(pages.join("\n\n"));
-  const title = Process("aigcs.title", article);
-  const summary = Process("aigcs.summary", article);
+  let title = "";
+  let summary = "";
+  try {
+    title = Process("aigcs.title", article);
+    summary = Process("aigcs.summary", article);
+  } catch (e) {
+    s.Remove(file);
+    throw e;
+  }
 
   // Save the document to the vector database
   let part = 0;
@@ -93,7 +100,7 @@ function Save(payload) {
       path: file,
       fingerprint: id,
       user: "__public",
-      title: title,
+      name: title,
       summary: summary,
       content: content,
       part: part,
