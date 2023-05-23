@@ -1,0 +1,6 @@
+{
+  "name": "管理员",
+  "action": {
+    "bind": { "model": "admin.user", "option": { "form": "admin.user" } }
+  }
+}

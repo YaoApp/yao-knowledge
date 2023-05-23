@@ -1,7 +1,7 @@
 {
-  "name": "::Demo Application",
-  "short": "::Demo",
-  "description": "::Another yao application",
+  "name": "Yao Knowledge",
+  "short": "Knowledge",
+  "description": "Yao Knowledge Base",
   "version": "0.10.3",
   "adminRoot": "admin",
   // "setup": "scripts.demo.Data",

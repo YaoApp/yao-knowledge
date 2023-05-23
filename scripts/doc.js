@@ -19,6 +19,14 @@ const DocumentSchema = {
       },
     },
     {
+      name: "day",
+      dataType: ["date"],
+      description: "the date of the document",
+      moduleConfig: {
+        "text2vec-openai": { skip: true, vectorizePropertyName: false },
+      },
+    },
+    {
       name: "path",
       dataType: ["string"],
       description: "the file path of the document",
@@ -108,6 +116,7 @@ function Insert(data) {
   data.url = data.url || "";
   data.name = data.name || Process("aigcs.title", data.content);
   data.summary = data.summary || Process("aigcs.summary", data.content);
+  data.day = data.day || new Date().toISOString().split("T")[0] + "T00:00:00Z";
 
   // Insert document
   let cfg = setting();
@@ -330,6 +339,84 @@ function AdminSearch(query, page, pageSize) {
     prev: -1,
     total: total,
   };
+}
+
+/**
+ * Get Stat
+ * yao run scripts.doc.AdminStat
+ */
+function AdminStat() {
+  return {
+    latest: adminLatestDocs({}),
+    documents: adminDocsCount({}),
+    parts: adminCount({}),
+  };
+}
+
+function adminLatestDocs(query) {
+  let type = "pdf";
+  if (
+    query &&
+    query.wheres &&
+    query.wheres[0] &&
+    query.wheres[0].column == "type"
+  ) {
+    type = query.wheres[0].value;
+  }
+
+  let today = new Date();
+  let sevenDaysAgo =
+    new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0] + "T00:00:00Z";
+
+  let payload = `{
+    Aggregate {
+        Document(
+          groupBy: ["day"]
+          where: {
+            path: ["day"],
+            operator: GreaterThanEqual,
+            valueDate:"${sevenDaysAgo}"
+          }
+        ){
+          groupedBy {
+            value
+            path
+          }
+          meta {  count }
+        }
+        }
+    }`;
+
+  let cfg = setting();
+  let url = `${cfg.host}/v1/graphql`;
+  let objects = post(url, { query: payload }, cfg.key);
+  let data = objects.data || {};
+  let items = [];
+  let days = {};
+
+  if (
+    data.Aggregate &&
+    data.Aggregate.Document &&
+    data.Aggregate.Document.length > 0
+  ) {
+    data.Aggregate.Document.forEach((item) => {
+      days[item.groupedBy.value.split("T")[0]] = item.meta.count;
+    });
+  }
+
+  for (let i = 0; i < 7; i++) {
+    let day = new Date(today.getTime() - i * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+    if (!days[day]) {
+      days[day] = 0;
+    }
+
+    items.unshift({ day: day, count: days[day] });
+  }
+  return items;
 }
 
 /**

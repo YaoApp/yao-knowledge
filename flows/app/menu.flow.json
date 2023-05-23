@@ -6,13 +6,10 @@
       {
         "icon": "icon-settings",
         "name": "设置",
-        "path": "/x/Form/setting.doc/1/edit",
-        "dot": true,
+        "path": "/x/Table/admin.user",
         "children": [
-          {
-            "name": "文档设置",
-            "path": "/x/Form/setting.doc/1/edit"
-          },
+          { "name": "系统管理员", "path": "/x/Table/admin.user" },
+          { "name": "文档设置", "path": "/x/Form/setting.doc/1/edit" },
           { "name": "系统设置", "path": "/setting" }
         ]
       }
