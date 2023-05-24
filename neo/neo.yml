@@ -18,7 +18,7 @@ prompts:
       - Answer my questions in Chinese from now on.
 
 option:
-  temperature: 0.8
+  temperature: 0.6
 
 allows:
   - "http://127.0.0.1:8000"

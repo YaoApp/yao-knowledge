@@ -1,4 +1,9 @@
 /**
+ * vector database (on Weaviate)
+ * Will be replaced by the new vector process
+ */
+
+/**
  * Document schema structure
  */
 const DocumentSchema = {
@@ -579,6 +584,244 @@ function Delete(fingerprint) {
   });
 
   return ids;
+}
+
+/**
+ * Search the part of file with the input
+ * yao run scripts.doc.Query '::{"input":"YAO 怎么写关联查询", "distance": 0.2}' 1 2
+ *
+ * @param {*} input
+ */
+function Query(params, page, pagesize) {
+  params = params || {};
+  page = page ? parseInt(page) : 1;
+  pagesize = pagesize ? parseInt(pagesize) : 20;
+
+  const input = params.input || "";
+  const distance = params.distance || 0.2;
+  const connector = "openai.text-embedding-ada-002";
+
+  if (!input || input == "") {
+    throw new Exception("input is required", 400);
+  }
+
+  const resp = Process("openai.Embeddings", connector, input);
+  if (!resp || resp.code || !resp.data) {
+    const message = resp.message || "openai.Embeddings error";
+    const code = resp.code || 500;
+    throw new Exception(message, code);
+  }
+
+  const vector = JSON.stringify(resp.data[0].embedding || []);
+  const offset = page ? (page - 1) * pagesize : 0;
+  const cfg = setting();
+  const url = `${cfg.host}/v1/graphql`;
+
+  let payload = {
+    query: `{
+      Aggregate {
+        Document (
+          nearVector: {
+            vector: ${vector}
+            distance: ${distance}
+          }
+        )
+        { 
+          meta { 
+            count 
+          } 
+        }
+      }
+      Get {
+        Document(
+          limit: ${pagesize}
+          offset: ${offset}
+          nearVector: {
+            vector: ${vector}
+            distance: ${distance}
+          }
+        ) 
+        {
+          name
+          summary
+          content
+          path
+          type
+          url
+          part
+          fingerprint
+          _additional{
+            id
+            lastUpdateTimeUnix,
+            distance
+          }
+        }
+      }
+    }`,
+  };
+
+  response = post(url, payload, cfg.key);
+  if (response && response.code && response.code != 200 && response.message) {
+    throw new Exception(response.message, response.code);
+  }
+
+  if (response && response.errors) {
+    throw new Exception(response.errors[0].message, 500);
+  }
+
+  let data = response.data || {
+    Get: { Document: [] },
+    Aggregate: { Document: [{ meta: { count: 0 } }] },
+  };
+
+  const meta =
+    data.Aggregate.Document[0] && data.Aggregate.Document[0].meta
+      ? data.Aggregate.Document[0].meta
+      : { count: 0 };
+
+  let total = meta.count;
+  let pages = Math.ceil(total / pagesize);
+  let prev = page > 1 ? page - 1 : 1;
+  let next = page < pages ? page + 1 : pages;
+  let items = data.Get.Document || [];
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+    item.id = item._additional.id;
+    item.lastUpdateTimeUnix = item._additional.lastUpdateTimeUnix;
+    item.distance = item._additional.distance;
+    delete item._additional;
+  }
+
+  return {
+    data: items,
+    next: next,
+    page: parseInt(page),
+    pagecnt: pages,
+    prev: prev,
+    total: total,
+  };
+}
+
+/**
+ * Search the file of file with the input
+ * yao run scripts.doc.Search '::{"input":"YAO 怎么写关联查询", "distance": 0.2}' 1 10
+ *
+ * const distance = 0.2;
+ * const distancePrompts = 2;
+ * @param {*} input
+ */
+function Search(params, page, pagesize) {
+  params = params || {};
+  page = page ? parseInt(page) : 1;
+  pagesize = pagesize ? parseInt(pagesize) : 20;
+
+  const input = params.input || "";
+  const distance = params.distance || 0.2;
+  const connector = "openai.text-embedding-ada-002";
+
+  if (!input || input == "") {
+    throw new Exception("input is required", 400);
+  }
+
+  const resp = Process("openai.Embeddings", connector, input);
+  if (!resp || resp.code || !resp.data) {
+    const message = resp.message || "openai.Embeddings error";
+    const code = resp.code || 500;
+    throw new Exception(message, code);
+  }
+
+  const vector = JSON.stringify(resp.data[0].embedding || []);
+  const offset = page ? (page - 1) * pagesize : 0;
+  const cfg = setting();
+  const url = `${cfg.host}/v1/graphql`;
+
+  let payload = {
+    query: `{
+      Aggregate {
+        Document (
+          nearVector: {
+            vector: ${vector}
+            distance: ${distance}
+          }
+          groupBy: ["fingerprint"]
+        )
+        { 
+          meta { 
+            count 
+          }
+          groupedBy { value path }
+        }
+      }
+      Get {
+        Document(
+          limit: ${pagesize}
+          offset: ${offset}
+          nearVector: {
+            vector: ${vector}
+            distance: ${distance}
+          }
+          groupBy: {
+            path: ["fingerprint"]
+            groups: ${pagesize}
+            objectsPerGroup: 9999
+          }
+        ) 
+        {
+          name
+          summary
+          content
+          path
+          type
+          url
+          part
+          fingerprint
+          _additional{
+            id
+            lastUpdateTimeUnix,
+            distance
+            group {
+              groupedBy { value path }
+            }
+          }
+        }
+      }
+    }`,
+  };
+
+  response = post(url, payload, cfg.key);
+  if (response && response.code && response.code != 200 && response.message) {
+    throw new Exception(response.message, response.code);
+  }
+  if (response && response.errors) {
+    throw new Exception(response.errors[0].message, 500);
+  }
+
+  let data = response.data || {
+    Get: { Document: [] },
+    Aggregate: { Document: [{ meta: { count: 0 } }] },
+  };
+
+  let total = data.Aggregate.Document.length;
+  let pages = Math.ceil(total / pagesize);
+  let prev = page > 1 ? page - 1 : 1;
+  let next = page < pages ? page + 1 : pages;
+  let items = data.Get.Document || [];
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+    item.id = item._additional.id;
+    item.lastUpdateTimeUnix = item._additional.lastUpdateTimeUnix;
+    item.distance = item._additional.distance;
+    delete item._additional;
+  }
+
+  return {
+    data: items,
+    next: next,
+    page: parseInt(page),
+    pagecnt: pages,
+    prev: prev,
+    total: total,
+  };
 }
 
 /**

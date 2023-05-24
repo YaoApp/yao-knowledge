@@ -12,7 +12,7 @@ services:
       - "5080"
       - --scheme
       - http
-    image: semitechnologies/weaviate:1.18.3
+    image: semitechnologies/weaviate:latest
     ports:
       - 5080:5080
     restart: on-failure:0
