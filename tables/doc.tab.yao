@@ -81,10 +81,16 @@
       }
     },
     "table": {
-      "名称": { "bind": "name", "view": { "type": "Text", "props": {} } },
+      "名称": {
+        "bind": "name",
+        "view": { "type": "Tooltip", "props": { "title": "{{content}}" } }
+      },
       "片段": { "bind": "part", "view": { "type": "Text", "props": {} } },
       "文件": { "bind": "path", "view": { "type": "Text", "props": {} } },
-      "摘要": { "bind": "summary", "view": { "type": "Text", "props": {} } },
+      "摘要": {
+        "bind": "summary",
+        "view": { "type": "Tooltip", "props": { "title": "{{content}}" } }
+      },
       "创建时间": {
         "bind": "created_at",
         "view": { "type": "Text", "props": { "format": "YYYY年M月D日" } }

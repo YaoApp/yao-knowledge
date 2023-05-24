@@ -291,6 +291,7 @@ function AdminSearch(query, page, pageSize) {
         name
         path
         summary
+        content
         fingerprint
         part
         _additional{
@@ -318,6 +319,7 @@ function AdminSearch(query, page, pageSize) {
         id: item._additional.id,
         name: item.name,
         path: item.path,
+        content: item.content,
         summary:
           item.summary.length > 50
             ? item.summary.substring(0, 50) + "..."
