@@ -754,8 +754,6 @@ function Search(params, page, pagesize) {
       }
       Get {
         Document(
-          limit: ${pagesize}
-          offset: ${offset}
           nearVector: {
             vector: ${vector}
             distance: ${distance}

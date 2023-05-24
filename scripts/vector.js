@@ -18,6 +18,17 @@ function Match(context, messages) {
 }
 
 /**
+ * Search content from the vector database
+ * @param {*} input
+ * @param {*} page
+ * @returns
+ */
+function Search(input, page) {
+  const params = { input: input, distance: 0.25 };
+  return Process("scripts.doc.Search", params, page, 9);
+}
+
+/**
  * Save the content to the vector database
  * @param {*} payload
  * @returns
