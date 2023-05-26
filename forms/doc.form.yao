@@ -1,0 +1,96 @@
+{
+  "name": "文档片段",
+  "action": {
+    "bind": { "option": {} },
+    "find": { "process": "scripts.doc.AdminFind" },
+    "delete": { "process": "scripts.doc.AdminDelete" }
+  },
+  "layout": {
+    "actions": [
+      {
+        "title": "下载",
+        "icon": "icon-download",
+        "style": "success",
+        "showWhenView": true,
+        "action": {
+          "Common.historyPush": {
+            "pathname": "/api/doc/download/{{path}}",
+            "public": true
+          }
+        }
+      },
+      {
+        "title": "删除",
+        "icon": "icon-check",
+        "showWhenView": true,
+        "style": "danger",
+        "action": [
+          {
+            "name": "Confirm",
+            "payload": {
+              "content": "请确认重置，重置后数据无法恢复",
+              "title": "确认"
+            },
+            "type": "Common.confirm"
+          },
+          { "name": "Delete", "payload": {}, "type": "Form.delete" },
+          { "name": "CloseModal", "payload": {}, "type": "Common.closeModal" }
+        ]
+      },
+      {
+        "title": "关闭",
+        "icon": "icon-x",
+        "showWhenAdd": true,
+        "showWhenView": true,
+        "action": [
+          {
+            "name": "CloseModal",
+            "type": "Common.closeModal",
+            "payload": {}
+          }
+        ]
+      }
+    ],
+    "form": {
+      "sections": [
+        {
+          "columns": [
+            { "width": 12, "name": "名称" },
+            { "width": 8, "name": "文件" },
+            { "width": 4, "name": "片段" },
+            { "width": 24, "name": "摘要" },
+            { "width": 24, "name": "内容" },
+            { "width": 12, "name": "创建时间" },
+            { "width": 12, "name": "更新时间" }
+          ]
+        }
+      ],
+      "props": {}
+    },
+    "config": { "showAnchor": false },
+    "primary": "id"
+  },
+  "fields": {
+    "form": {
+      "名称": { "bind": "name", "edit": { "type": "Input", "props": {} } },
+      "片段": { "bind": "part", "edit": { "type": "Input", "props": {} } },
+      "文件": { "bind": "path", "edit": { "type": "Input", "props": {} } },
+      "摘要": {
+        "bind": "summary",
+        "edit": { "type": "TextArea", "props": {} }
+      },
+      "内容": {
+        "bind": "content",
+        "edit": { "type": "TextArea", "props": {} }
+      },
+      "创建时间": {
+        "bind": "created_at",
+        "edit": { "type": "Input", "props": { "format": "YYYY年M月D日" } }
+      },
+      "更新时间": {
+        "bind": "updated_at",
+        "edit": { "type": "Input", "props": { "format": "YYYY年M月D日" } }
+      }
+    }
+  }
+}

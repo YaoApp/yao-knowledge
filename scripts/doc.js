@@ -249,7 +249,25 @@ function AdminDelete(id) {
 function AdminFind(id) {
   let cfg = setting();
   let url = `${cfg.host}/v1/objects/${id}`;
-  return get(url, null, cfg.key);
+  let item = get(url, null, cfg.key);
+  if (item && item.properties) {
+    console.log(item);
+    return {
+      id: item.id,
+      name: item.properties.name,
+      path: item.properties.path,
+      content: item.properties.content,
+      summary: item.properties.summary,
+      fingerprint: item.properties.fingerprint,
+      part: `片段: ${item.properties.part + 1}`,
+
+      created_at: new Date(parseInt(item.creationTimeUnix)).toLocaleString(),
+
+      updated_at: new Date(parseInt(item.lastUpdateTimeUnix)).toLocaleString(),
+    };
+  }
+
+  return item;
 }
 
 /**

@@ -1,5 +1,5 @@
 {
-  "name": "文档",
+  "name": "文档片段",
   "action": {
     "bind": {},
     "search": {
@@ -28,16 +28,16 @@
       "operation": {
         "fold": false,
         "actions": [
-          // {
-          //   "action": {
-          //     "Common.openModal": {
-          //       "width": 1200,
-          //       "Form": { "type": "view", "model": "doc" }
-          //     }
-          //   },
-          //   "title": "查看",
-          //   "icon": "icon-eye"
-          // },
+          {
+            "action": {
+              "Common.openModal": {
+                "width": 1200,
+                "Form": { "type": "view", "model": "doc" }
+              }
+            },
+            "title": "查看",
+            "icon": "icon-eye"
+          },
           {
             "title": "下载",
             "icon": "icon-download",
@@ -81,16 +81,13 @@
       }
     },
     "table": {
-      "名称": {
-        "bind": "name",
+      "名称": { "bind": "name", "view": { "type": "Text", "props": {} } },
+      "片段": {
+        "bind": "part",
         "view": { "type": "Tooltip", "props": { "title": "{{content}}" } }
       },
-      "片段": { "bind": "part", "view": { "type": "Text", "props": {} } },
       "文件": { "bind": "path", "view": { "type": "Text", "props": {} } },
-      "摘要": {
-        "bind": "summary",
-        "view": { "type": "Tooltip", "props": { "title": "{{content}}" } }
-      },
+      "摘要": { "bind": "summary", "view": { "type": "Text", "props": {} } },
       "创建时间": {
         "bind": "created_at",
         "view": { "type": "Text", "props": { "format": "YYYY年M月D日" } }
