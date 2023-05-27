@@ -105,6 +105,7 @@ function Save(payload) {
 
     const result = Process("scripts.doc.Insert", doc);
     if (result && result.code && result.message) {
+      fs.Remove(file);
       throw new Exception(result.message, result.code);
     }
 
