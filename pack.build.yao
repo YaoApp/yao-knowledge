@@ -1,0 +1,9 @@
+{
+  "environments": {
+    "YAO_ENV": "production",
+    "YAO_LANG": "zh-CN",
+    "YAO_RUNTIME_MIN": 20,
+    "YAO_RUNTIME_MAX": 100,
+    "YAO_LOG": "./logs/application.log"
+  }
+}
