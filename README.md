@@ -175,7 +175,11 @@ dist
 ```bash
 mkdir /data/empty
 cd /data/empty
+
+# ⚠️ 首次运行初始化数据
 knowledge-0.10.3-linux-amd64 -k 123456 migrate --reset && knowledge-0.10.3-linux-amd64 -k 123456 run scripts.doc.SchemaReset
+
+# 启动服务
 knowledge-0.10.3-linux-amd64 -k 123456 start
 ```
 
