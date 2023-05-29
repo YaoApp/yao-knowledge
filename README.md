@@ -36,7 +36,7 @@
 运行 yao version 查看
 
 ```bash
-yao version -all
+yao version --all
 ```
 
 ```bash
@@ -121,14 +121,16 @@ YAO_JWT_SECRET=LiQDE1kOnvv6Qv3if2KhEJ7Ihzz1XZ
 
 ```
 
-#### 第三步: 应用初始化
+#### 第三步: 启动服务
+
+初始化数据
 
 ```bash
 yao migrate --reset && yao run scripts.doc.SchemaReset
 
 ```
 
-#### 第三步: 启动服务
+启动服务
 
 ```bash
 yao start
