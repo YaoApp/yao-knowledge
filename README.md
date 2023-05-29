@@ -102,6 +102,8 @@ git clone https://github.com/YaoApp/yao-knowledge.git
 
 ⚠️⚠️⚠️ **如没有 /data/app/db 目录，需手动创建**
 
+`/data/app/.env` 文件
+
 ```bash
 YAO_DB_DRIVER="sqlite3"
 YAO_DB_PRIMARY="/data/app/db/yao.db"
