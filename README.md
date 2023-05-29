@@ -102,6 +102,8 @@ git clone https://github.com/YaoApp/yao-knowledge.git
 
 ⚠️⚠️⚠️ **如没有 /data/app/db 目录，需手动创建**
 
+⚠️⚠️⚠️ **将 PDF 阅读扩展插件复制到 YAO 扩展目录**
+
 `/data/app/.env` 文件
 
 ```bash
@@ -116,6 +118,11 @@ YAO_PORT="5099"
 YAO_SESSION_FILE="/data/app/db/.session"
 YAO_SESSION_STORE="file"
 YAO_STUDIO_PORT="5077"
+
+# YAO_EXTENSION_ROOT 设置 YAO 扩展目录; 插件目录为 $YAO_EXTENSION_ROOT/plugins。
+# 将对应架构的 .so 文件复制到 /data/yao-exts/plugins/pdf.so
+# PDF 文件阅读插件 https://github.com/YaoApp/yao-knowledge-pdf
+YAO_EXTENSION_ROOT="/data/yao-exts"
 
 WEAVIATE_HOST="http://<WEAVIATE HOST>:<WEAVIATE PORT>"
 OPENAI_KEY=sk-xxxx
@@ -168,6 +175,7 @@ dist
 ```bash
 mkdir /data/empty
 cd /data/empty
+knowledge-0.10.3-linux-amd64 -k 123456 migrate --reset && knowledge-0.10.3-linux-amd64 -k 123456 run scripts.doc.SchemaReset
 knowledge-0.10.3-linux-amd64 -k 123456 start
 ```
 
