@@ -20,7 +20,7 @@
 | 依赖                                             | 版本                                  | 说明                |
 | ------------------------------------------------ | ------------------------------------- | ------------------- |
 | [YAO](https://yaoapps.com/)                      | v0.10.3+ **(#45f83c0)**               | Yao 应用引擎        |
-| [Weaviate](https://github.com/weaviate/weaviate) | v0.19.6+                              | Weaviate 向量知识库 |
+| [Weaviate](https://github.com/weaviate/weaviate) | v0.19.6+                              | Weaviate 向量数据库 |
 | [OpenAI](https://platform.openai.com/)           | gpt-3.5-turbo, text-embedding-ada-002 | OpenAI 接口         |
 
 ## 安装配置
