@@ -149,7 +149,7 @@ docker run -it --rm \
       yaoapp/yao-build:0.10.3-amd64 make
 ```
 
-打包好的制品 `dist` 目录下
+打包好的制品在 `dist` 目录下
 
 ```bash
 dist
@@ -167,6 +167,8 @@ knowledge-0.10.3-linux-amd64 -k 123456 start
 
 ### 文件上传客户端
 
+仓库: https://github.com/YaoApp/yao-knowledge-desktop
+
 配置文件: [config.js](https://github.com/YaoApp/yao-knowledge-desktop/blob/main/config.js)
 
 ```bash
@@ -178,11 +180,11 @@ module.exports = { url: "http://127.0.0.1", port: 5099 };
 | url  | 知识库 API 地址 |
 | port | 端口号          |
 
-制品打包参考 github workflow
-
-[release workflow](https://github.com/YaoApp/yao-knowledge-desktop/blob/main/.github/workflows/release.yml)
+制品打包参考 [release workflow](https://github.com/YaoApp/yao-knowledge-desktop/blob/main/.github/workflows/release.yml)
 
 ### 知识库网站
+
+仓库: https://github.com/YaoApp/yao-knowledge-web
 
 可将打包后的文件，放到 `public` 目录
 
