@@ -8,7 +8,7 @@
 | ----------------------------------------------- | ------------------------------------------- |
 | https://github.com/YaoApp/yao-knowledge         | 知识库 API 接口, 管理后台                   |
 | https://github.com/YaoApp/yao-knowledge-web     | 知识库网站源码 (Build 之后放在 public 目录) |
-| https://github.com/YaoApp/yao-knowledge-desktop | 文档上传客户端（开源版仅支持 PDF 文件格式） |
+| https://github.com/YaoApp/yao-knowledge-desktop | 文档上传客户端（当前支持 PDF 文件格式）     |
 | https://github.com/YaoApp/yao-knowledge-pdf     | YAO PDF 文档阅读器插件 (支持 Linux / MacOS) |
 
 ## 项目依赖
