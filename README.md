@@ -1,10 +1,6 @@
 # AI 知识库
 
-演示视频剪辑中...
-
-⚠️⚠️⚠️ **开源版仅作为开发交流用途，不代表最终商业版品质**
-
-❤️❤️❤️ **商业版联系商务咨询 [合作联系](https://yaoapps.com/contact)**
+![屏幕截图](https://release-bj.yaoapps.com/docs/v0.10.3/screenshots/knowledge.png)
 
 ## 仓库说明
 
