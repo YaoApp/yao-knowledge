@@ -2,6 +2,12 @@
 
 ![屏幕截图](https://release-bj.yaoapps.com/docs/v0.10.3/screenshots/knowledge.png)
 
+⚠️ ⚠️ ⚠️ 本项目为一个 YAO 应用的演示示例，主要介绍 YAO 如何对接向量数据库、客户端、自定义网页、 Neo DSL 中如何使用私有数据及如何将应用打包为独立制品等。
+
+⚠️ ⚠️ ⚠️ 在开始前需要了解 YAO 的基本使用方式。 建议熟悉 YAO 之后尝试。 官方文档: https://yaoapps.com/doc
+
+⚠️ ⚠️ ⚠️ 如需在生产环境中使用，可联系商务。联系方式: https://yaoapps.com/contact
+
 ## 仓库说明
 
 | 仓库                                            | 说明                                        |
